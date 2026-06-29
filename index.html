@@ -1,4 +1,4 @@
-<!-- actualización forzada 1 -->
+<!-- actualización forzada 2 -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,11 +63,16 @@
 
     .carousel img {
       width: 100%;
-      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
     }
 
     .carousel img.active {
-      display: block;
+      opacity: 1;
+      position: relative;
     }
 
     .carousel button {
@@ -80,6 +85,7 @@
       font-size: 2em;
       cursor: pointer;
       padding: 5px 10px;
+      z-index: 10;
     }
 
     .carousel .prev { left: 10px; }
@@ -220,26 +226,41 @@
   </footer>
 
   <script>
-    const images = document.querySelectorAll('.carousel img');
-    const prev = document.querySelector('.carousel .prev');
-    const next = document.querySelector('.carousel .next');
-    let index = 0;
+    document.addEventListener("DOMContentLoaded", () => {
+      const images = document.querySelectorAll(".carousel img");
+      const prev = document.querySelector(".carousel .prev");
+      const next = document.querySelector(".carousel .next");
+      let index = 0;
 
-    function showImage(i) {
-      images.forEach(img => img.classList.remove('active'));
-      images[i].classList.add('active');
-    }
+      function showImage(i) {
+        images.forEach((img, idx) => {
+          img.classList.remove("active");
+          img.style.opacity = "0";
+          if (idx === i) {
+            img.classList.add("active");
+            img.style.opacity = "1";
+          }
+        });
+      }
 
-    prev.addEventListener('click', () => {
-      index = (index - 1 + images.length) % images.length;
-      showImage(index);
-    });
+      prev.addEventListener("click", () => {
+        index = (index - 1 + images.length) % images.length;
+        showImage(index);
+      });
 
-    next.addEventListener('click', () => {
-      index = (index + 1) % images.length;
-      showImage(index);
+      next.addEventListener("click", () => {
+        index = (index + 1) % images.length;
+        showImage(index);
+      });
+
+      // Cambio automático cada 5 segundos
+      setInterval(() => {
+        index = (index + 1) % images.length;
+        showImage(index);
+      }, 5000);
     });
   </script>
 </body>
 </html>
+
 
