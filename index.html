@@ -228,16 +228,18 @@
     </div>
   </section>
 
-  <section id="contacto">
-    <h2>📩 Contacto</h2>
-    <form action="mailto:wilberpatricioroseroayala@gmail.com" method="post" enctype="text/plain">
-      <input type="text" name="nombre" placeholder="Tu nombre" required>
-      <input type="email" name="correo" placeholder="Tu correo" required>
-      <textarea name="mensaje" rows="5" placeholder="Tu mensaje" required></textarea>
-      <button type="submit">Enviar</button>
-    </form>
-  </section>
-
+  <section id="contacto" style="padding: 40px 20px; text-align: center;">
+  <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto</h2>
+  <p style="color: #ccc; margin-bottom: 20px;">Envíanos tus datos y te responderemos a la brevedad.</p>
+  
+  <form action="https://formspree.io/f/TU_CODIGO_FORMSPREE" method="POST" style="max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px;">
+    <input type="text" name="nombre" placeholder="Tu nombre" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff;">
+    <input type="email" name="correo" placeholder="Tu correo" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff;">
+    <textarea name="mensaje" rows="5" placeholder="Tu mensaje" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; resize: vertical;"></textarea>
+    <button type="submit" style="padding: 12px; background: #ffcc00; color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">Enviar</button>
+  </form>
+</section>
+  
   <footer>
     <p>&copy; 2026 Eventos y Sonido - W&R</p>
   </footer>
