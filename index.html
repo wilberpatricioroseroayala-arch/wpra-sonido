@@ -115,13 +115,17 @@
       margin: 10px 0;
     }
 
-    .plan button {
+    .plan button, .plan a {
+      display: inline-block;
       background: #f0c000;
+      color: #000;
+      text-decoration: none;
       border: none;
       padding: 10px 20px;
       cursor: pointer;
       font-weight: bold;
       border-radius: 5px;
+      font-size: 0.9em;
     }
 
     /* Contacto */
@@ -133,19 +137,24 @@
       gap: 15px;
     }
 
-    form input, form textarea {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
+    form input, form select, form textarea {
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 6px;
+      background: #222;
+      color: #fff;
+      font-family: inherit;
     }
 
     form button {
       background: #f0c000;
+      color: #000;
       border: none;
-      padding: 10px;
+      padding: 12px;
       cursor: pointer;
       font-weight: bold;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 1rem;
     }
 
     footer {
@@ -158,22 +167,21 @@
 </head>
 <body>
 
-  
   <header>
-  <h1>Eventos y Sonido - W&R</h1>
-  <p>Transformamos tus momentos en experiencias inolvidables.</p>
-  <!-- BOTÓN DIRECTO A SERVICIOS -->
-  <a href="#servicios" style="display: inline-block; margin-top: 15px; padding: 12px 24px; background: #f0c000; color: #000; font-weight: bold; text-decoration: none; border-radius: 6px;">Ver Servicios de Ingeniería</a>
-</header>
+    <h1>Eventos y Sonido - W&R</h1>
+    <p>Transformamos tus momentos en experiencias inolvidables.</p>
+    <!-- BOTÓN DIRECTO A SERVICIOS -->
+    <a href="#servicios" style="display: inline-block; margin-top: 15px; padding: 12px 24px; background: #f0c000; color: #000; font-weight: bold; text-decoration: none; border-radius: 6px;">Ver Servicios de Ingeniería</a>
+  </header>
 
   <nav>
-  <a href="#servicios">Ingeniería & Servicios</a>
-  <a href="#eventos">Eventos Sociales</a>
-  <a href="#produccion">Producción Musical</a>
-  <a href="#videos">Videos</a>
-  <a href="#planes">Planes</a>
-  <a href="#contacto">Contacto</a>
-</nav>
+    <a href="#servicios">Ingeniería & Servicios</a>
+    <a href="#eventos">Eventos Sociales</a>
+    <a href="#produccion">Producción Musical</a>
+    <a href="#videos">Videos</a>
+    <a href="#planes">Planes</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
 
   <!-- Sección de Ingeniería & Servicios -->
   <section id="servicios" style="padding: 60px 20px; text-align: center; background: #111;">
@@ -249,44 +257,62 @@
         <h3>Básico</h3>
         <p>DJ + Sonido</p>
         <p>$50</p>
-        <button>Solicitar</button>
+        <a href="#contacto" onclick="seleccionarPlan('Plan Básico ($50/h - DJ + Sonido)')">Solicitar</a>
       </div>
       <div class="plan">
         <h3>Intermedio</h3>
         <p>DJ + Sonido + Luces</p>
         <p>$60</p>
-        <button>Solicitar</button>
+        <a href="#contacto" onclick="seleccionarPlan('Plan Intermedio ($60/h - DJ + Sonido + Luces)')">Solicitar</a>
       </div>
       <div class="plan">
         <h3>Premium</h3>
         <p>DJ + Sonido + Luces + Pantallas</p>
         <p>$70</p>
-        <button>Solicitar</button>
+        <a href="#contacto" onclick="seleccionarPlan('Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)')">Solicitar</a>
       </div>
     </div>
   </section>
 
   <!-- Contacto -->
-<section id="contacto" style="padding: 40px 20px; text-align: center;">
-  <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto</h2>
-  <p style="color: #ccc; margin-bottom: 20px;">Envíanos tus datos y te responderemos a la brevedad.</p>
+  <section id="contacto" style="padding: 40px 20px; text-align: center;">
+    <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto</h2>
+    <p style="color: #ccc; margin-bottom: 20px;">Envíanos tus datos y te responderemos a la brevedad.</p>
 
-  <form action="https://formspree.io/f/mvkkydbk" method="POST" style="max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px;">
-    <input type="hidden" name="_next" value="https://wilberpatricioroseroayala-arch.github.io/wpra-sonido/">
-    <input type="text" name="nombre" placeholder="Tu nombre" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff;">
-    <input type="email" name="correo" placeholder="Tu correo" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff;">
-    <!-- CAMPO DE TELÉFONO AÑADIDO -->
-    <input type="tel" name="telefono" placeholder="Tu teléfono / WhatsApp" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff;">
-    <textarea name="mensaje" rows="5" placeholder="Tu mensaje" required style="padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; resize: vertical;"></textarea>
-    <button type="submit" style="padding: 12px; background: #ffcc00; color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">Enviar</button>
-  </form>
-</section>
+    <form action="https://formspree.io/f/mvkkydbk" method="POST">
+      <input type="hidden" name="_next" value="https://wilberpatricioroseroayala-arch.github.io/wpra-sonido/">
+      
+      <input type="text" name="nombre" placeholder="Tu nombre" required>
+      <input type="email" name="correo" placeholder="Tu correo" required>
+      <input type="tel" name="telefono" placeholder="Tu teléfono / WhatsApp" required>
+      
+      <!-- DESPLEGABLE PARA SELECCIONAR O VIAJAR EL PLAN ELEGIDO -->
+      <select name="plan" id="selectPlan" required style="cursor: pointer;">
+        <option value="" disabled selected>Selecciona el Plan de tu interés</option>
+        <option value="Plan Básico ($50/h - DJ + Sonido)">Plan Básico ($50/h - DJ + Sonido)</option>
+        <option value="Plan Intermedio ($60/h - DJ + Sonido + Luces)">Plan Intermedio ($60/h - DJ + Sonido + Luces)</option>
+        <option value="Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)">Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)</option>
+        <option value="Cotización Personalizada / Consulta General">Cotización Personalizada / Otro</option>
+      </select>
+
+      <textarea name="mensaje" rows="5" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
   
   <footer>
     <p>&copy; 2026 Eventos y Sonido - W&R</p>
   </footer>
 
   <script>
+    // Función para auto-seleccionar el plan cuando presionan "Solicitar" en las tarjetas
+    function seleccionarPlan(nombrePlan) {
+      const selectElement = document.getElementById("selectPlan");
+      if (selectElement) {
+        selectElement.value = nombrePlan;
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       const images = document.querySelectorAll(".carousel img");
       const prev = document.querySelector(".carousel .prev");
@@ -323,3 +349,5 @@
   </script>
 </body>
 </html>
+
+
