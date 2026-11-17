@@ -348,8 +348,7 @@
         <option value="Cotización Personalizada / Consulta General">Cotización Personalizada / Otro</option>
       </select>
 
-      <textarea name="mensaje" id="campoMensaje" rows="5" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
-      <input type="hidden" name="repertorio_musical" id="campoRepertorio" value="Ninguna canción preseleccionada">
+      <textarea name="mensaje" id="campoMensaje" rows="6" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
       <button type="submit">Enviar</button>
     </form>
   </section>
@@ -370,7 +369,7 @@
     let catalogoMusical = [];
     let generoActual = "Todos";
     let cancionesElegidas = new Set();
-    let columnaOrden = "artista"; // Orden por defecto: Artista
+    let columnaOrden = "artista";
     let ordenAscendente = true;
 
     // Lector inteligente de líneas CSV
@@ -403,7 +402,6 @@
         if (comparacion !== 0) {
           return ordenAscendente ? comparacion : -comparacion;
         }
-        // Desempate secundario por título de canción
         return a.titulo.toLowerCase().localeCompare(b.titulo.toLowerCase(), 'es', { sensitivity: 'base' });
       });
     }
@@ -471,10 +469,8 @@
           }
         }
 
-        // Ordenar alfabéticamente por Artista (A-Z) antes de mostrar
         ordenarCatalogo();
 
-        // Genera los botones de géneros ordenados alfabéticamente
         const contenedorFiltros = document.getElementById("filtrosGenero");
         Array.from(generosUnicos).sort((a, b) => a.localeCompare(b, 'es')).forEach(gen => {
           const btn = document.createElement("button");
@@ -571,7 +567,6 @@
     function limpiarSeleccion() {
       cancionesElegidas.clear();
       document.getElementById("contadorSeleccion").innerText = "0 canciones seleccionadas";
-      document.getElementById("campoRepertorio").value = "Ninguna canción preseleccionada";
       document.getElementById("campoMensaje").value = "";
       renderizarTabla();
     }
@@ -583,7 +578,6 @@
       }
       const listaTexto = Array.from(cancionesElegidas).map(c => "• " + c).join("\n");
       
-      document.getElementById("campoRepertorio").value = "\n" + listaTexto;
       const cajaMensaje = document.getElementById("campoMensaje");
       cajaMensaje.value = `Hola, deseo cotizar mi evento con el siguiente repertorio seleccionado:\n${listaTexto}\n\nDetalles adicionales (fecha/lugar): `;
       
@@ -628,3 +622,4 @@
   </script>
 </body>
 </html>
+
