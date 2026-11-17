@@ -161,7 +161,7 @@ Bobo ,J Balvin,Reggaeton / Urbano
 Ginza,J Balvin,Reggaeton / Urbano
 Por ti no morire,Joe Arroyo,Salsa
 Nadie Se Muere,La Makina,Merengue
-"k&quot;,Let's F,Electrónica / EDM"
+k&quot,Lets F,Electrónica / EDM
 Party rock,Lmfao,Pop / Pop Ingles
 HangUpE1,Madonna,Pop / Pop Ingles
 Holiday ,Madonna,Pop / Pop Ingles
@@ -230,7 +230,7 @@ MAYONESA,CHOCOLATE,Pop / Pop Latino
 Tu Eres Ajena,Eddy Herrera,Merengue
 Funkete,El General,Pop / Pop Latino
 MUEVELO,EL GENERAL,Pop / Pop Latino
-1, 2, 3,El Simbolo,Pop / Pop Latino
+123,El Simbolo,Pop / Pop Latino
 Deorro Bailar,Elvis Crespo,Merengue
 Pintame Remix,Elvis Crespo,Merengue
 KOUMBO,GEORGE DANN,Pop / Pop Latino
@@ -292,7 +292,7 @@ Acercate,J Balvin,Reggaeton / Urbano
 Mi Gente,J Balvin,Reggaeton / Urbano
 Camisa Negra,Juanes,Pop / Pop Latino
 Si Quieres Mi Amor,Karolina,Merengue
-Shhh, Shhh,Kumbia Kings,Cumbia_Nueva
+Shhh Shhh,Kumbia Kings,Cumbia_Nueva
 Asereje,Las Ketchup,Pop / Pop Latino
 ASEREJE,LAS KETCHUP,Pop / Pop Latino
 soy chiquito,Lisa M,Pop / Pop Latino
@@ -360,7 +360,7 @@ El macho,Lisandro Meza,Cumbia_Antigua
 Macarena,Los Del Rio,Pop / Pop Latino
 Macarena,Los Del Rio,Pop / Pop Latino
 Fiesta Caliente,Los Ilegales,Merengue
-Vuela, Vuela,Magneto,Pop / Pop Latino
+Vuela Vuela,Magneto,Pop / Pop Latino
 Lose Control,Meduza,Electrónica / EDM
 Dulcemente Bella,Miguel Moly,Merengue
 dame un besito,Natusha,Cumbia_Antigua
@@ -601,7 +601,7 @@ Major Tom,Peter Schiling,Pop / Pop Ingles
 Another Night,Real McCoy,Pop / Pop Ingles
 Boys-Intro-Outro,Sabrina,Pop / Pop Ingles
 Bidi Bidi Bom Bom,Selena,Pop / Pop Latino
-CIEGA, SORDOMUDA,SHAKIRA,Pop / Pop Latino
+CIEGA SORDOMUDA,SHAKIRA,Pop / Pop Latino
 Carataplun,Sonora Dinamita,Cumbia_Antigua
 El CiclÃ³n,Sonora Dinamita,Cumbia_Antigua
 LAS BRUJAS,Sonora Dinamita,Cumbia_Antigua
@@ -865,7 +865,7 @@ LA REVANCHA,Medardo Y Sus Players,Cumbia_Antigua
 Lagrimas de Escarcha,Pastor Lopez,Cumbia_Antigua
 Always On My Mind,Pet Shop Boys,Pop / Pop Ingles
 Este Dolor Extended,SONIDO MASTER,Cumbia_Villera
-Wild, Wild West,The Escape Club,Pop / Pop Ingles
+Wild West,The Escape Club,Pop / Pop Ingles
 I Think We're Alone Now,Tiffany,Pop / Pop Ingles
 Legs,ZZ Top,Rock / Pop Rock / Alternativo INGLES
 No me dejes solo,Daddy Yankee,Reggaeton / Urbano
@@ -993,7 +993,7 @@ My Heart Goes Boom org,French Affair,Pop / Pop Ingles
 Baby Please Don't Go,Gary Glitter,Disco / Funk / Soul
 Martha Tiene Un Marcapasos,Hombres G,Pop / Pop Latino
 DISAPPEARE1,Inxs,Rock / Pop Rock / Alternativo INGLES
-Ferrari,James Hype, Miggy Dela Rosa,Electrónica / EDM
+Ferrari , Miggy Dela Rosa,Electrónica / EDM
 Somebody Else's Guy,Jocelyn Brown,Disco / Funk / Soul
 Ay Micaela,Los Fantasticos De Colombia,Cumbia_Antigua
 LA FUERZA DEL ENGAÃ‘O,Marcela Morelo,Pop / Pop Latino
@@ -1051,7 +1051,7 @@ CUMBIA CALETERA INTRO,IVAN Y SUS BAM BAND,Cumbia_Antigua
 LA CUMBIA DEL AMOR INTROMIX,Lisandro Meza,Cumbia_Antigua
 se me perdio la  cadenita,Sonora Dinamita,Cumbia_Antigua
 L.A.Woman,The Doors,Rock / Pop Rock / Alternativo INGLES
-Agarrala, Pegala, Azotala,Trebol Clan,Reggaeton / Urbano
+Agarrala Pegala Azotala,Trebol Clan,Reggaeton / Urbano
 MONY MONY,Billy Idol,Rock / Pop Rock / Alternativo INGLES
 Its My Life,Bon Jovi,Rock / Pop Rock / Alternativo INGLES
 INGRATA,CAFETACUBA,Rock / Pop Rock / Alternativo Espaniol
@@ -1097,7 +1097,7 @@ Born to be alive extended,Patric Hernandez,Pop / Pop Ingles
 Adan y Eva (Official Video),Paulo Londra,Reggaeton / Urbano
 COMO UNA PIEDRA EN EL ZAPATO,Sonora Dinamita,Cumbia_Antigua
 hasta abajo,Star Squad Y Los Subversivos,Reggaeton / Urbano
-Tonto Amor, Embustero, Mi Pobreza,Tierra Canela,Tecnocumbia
+Tonto Amor  Embustero Mi Pobreza,Tierra Canela,Tecnocumbia
 Better Off Alone (Remastered),Alice Deejay,Electrónica / EDM
 vuelo blanco de gaviota rmx intro,Ana Belen,Pop / Pop Latino
 Flaca,Andres Calamaro,Rock / Pop Rock / Alternativo Espaniol
@@ -1125,7 +1125,7 @@ Sharp Dressed Man,ZZ Top,Rock / Pop Rock / Alternativo INGLES
 I Gotta Feeling (en 2 platos),Black Eyed Peas,Pop / Pop Ingles
 Asi Es La Vida,Elefante,Rock / Pop Rock / Alternativo Espaniol
 When the Rain Begins to Fall,Germaine Jackson,Pop / Pop Ingles
-Bestia, bestia,Ilegales,Rock / Pop Rock / Alternativo Espaniol
+Bestia bestia,Ilegales,Rock / Pop Rock / Alternativo Espaniol
 Soy Un Macarra,Ilegales,Rock / Pop Rock / Alternativo Espaniol
 LA LOCURA DE HOY -  TRAICIO,IVAN Y SUS BAM BAND,Cumbia_Antigua
 Danger Zone,Kenny Loggins,Rock / Pop Rock / Alternativo INGLES
@@ -1145,14 +1145,14 @@ Don't stop 'til you get enough,Michael Jackson,Pop / Pop Ingles
 I Want To Break Free,Queen,Rock / Pop Rock / Alternativo INGLES
 White Wedding E1,Billy Idol,Rock / Pop Rock / Alternativo INGLES
 SunglassesAtNight,Cory Hart,Rock / Pop Rock / Alternativo INGLES
-Lo que pasÃ³, pasÃ³ extende bass,Daddy Yankee,Reggaeton / Urbano
+Lo que paso,Daddy Yankee,Reggaeton / Urbano
 personal jesus,Depeche Mode,Rock / Pop Rock / Alternativo INGLES
 SULTAN OF SWING,Dire Street,Rock / Pop Rock / Alternativo INGLES
-The Next Episode,Dr. Dre, Snoop Dogg, Eminem,Rap / Hip-Hop / R&B
+The Next Episode,Snoop Dogg Eminem,Rap / Hip-Hop / R&B
 Hombre Solitario,Ilegales,Rock / Pop Rock / Alternativo Espaniol
 Don't Stop Believin,Journey,Rock / Pop Rock / Alternativo INGLES
 Bette David eyes,Kim Carnes,Rock / Pop Rock / Alternativo INGLES
-Rumba , Samba , Mambo (Extended Remix),Loco Mia,Pop / Pop Latino
+Rumba  Samba  Mambo,Loco Mia,Pop / Pop Latino
 Wanna Be Startin  Somethin    -,Michael Jackson,Pop / Pop Ingles
 Gimme All Your Lovin,ZZ Top,Rock / Pop Rock / Alternativo INGLES
 Babby Come Back,BILLY RANKIN,Rock / Pop Rock / Alternativo INGLES
@@ -1205,7 +1205,7 @@ Matador - ,Los Fabulosos Cadillacs,Rock / Pop Rock / Alternativo Espaniol
 Dancing In The Dark,Bruce Springsteen,Rock / Pop Rock / Alternativo INGLES
 Agotados De Esperar El Fin,Ilegales,Rock / Pop Rock / Alternativo Espaniol
 ESTRECHEZ DE CORAZON,LOS PRISIONEROS,Rock / Pop Rock / Alternativo Espaniol
-China,Anuel AA, Daddy Yankee, Karol G, J Balvin & Ozuna -,Reggaeton / Urbano
+China,J Balvin & Ozuna -,Reggaeton / Urbano
 Entre dos tierras,Heroes Del Silencio,Rock / Pop Rock / Alternativo Espaniol
 Todo Lo Que Digais Que Somos,Ilegales,Rock / Pop Rock / Alternativo Espaniol
 THE BREAKUP SONG,Kc & The Sunshine Band,Rock / Pop Rock / Alternativo INGLES
