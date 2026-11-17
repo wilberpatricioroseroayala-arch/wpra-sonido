@@ -134,11 +134,19 @@
 
     /* Contacto */
     form {
-      max-width: 500px;
+      max-width: 550px;
       margin: auto;
       display: flex;
       flex-direction: column;
       gap: 15px;
+      text-align: left;
+    }
+
+    form label {
+      font-size: 0.85rem;
+      color: #ffcc00;
+      font-weight: bold;
+      margin-bottom: -10px;
     }
 
     form input, form select, form textarea {
@@ -148,17 +156,39 @@
       background: #222;
       color: #fff;
       font-family: inherit;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Iconos de calendario y reloj visibles en fondo oscuro */
+    form input[type="date"]::-webkit-calendar-picker-indicator,
+    form input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+
+    .fila-doble {
+      display: flex;
+      gap: 15px;
+    }
+
+    .fila-doble > div {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     form button {
       background: #f0c000;
       color: #000;
       border: none;
-      padding: 12px;
+      padding: 14px;
       cursor: pointer;
       font-weight: bold;
       border-radius: 6px;
       font-size: 1rem;
+      margin-top: 5px;
     }
 
     footer {
@@ -174,7 +204,6 @@
   <header>
     <h1>Eventos y Sonido - W&R</h1>
     <p>Transformamos tus momentos en experiencias inolvidables.</p>
-    <!-- BOTÓN DIRECTO A SERVICIOS -->
     <a href="#servicios" style="display: inline-block; margin-top: 15px; padding: 12px 24px; background: #f0c000; color: #000; font-weight: bold; text-decoration: none; border-radius: 6px;">Ver Servicios de Ingeniería</a>
   </header>
 
@@ -279,7 +308,7 @@
     </div>
   </section>
 
-  <!-- Selección Musical (Conectada a musica.csv con ordenamiento por Artista) -->
+  <!-- Selección Musical -->
   <section id="musica" style="padding: 50px 20px; text-align: center; background: #141414; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
     <div style="max-width: 900px; margin: 0 auto;">
       <h2 style="color: #ffcc00; font-size: 2rem; margin-bottom: 10px;">🎵 Selección Musical para tu Evento</h2>
@@ -290,9 +319,16 @@
       <input type="text" id="buscadorMusica" onkeyup="filtrarMusica()" placeholder="🔍 Buscar canción, artista o ritmo..." 
         style="width: 100%; max-width: 500px; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; font-size: 1rem;">
 
-      <!-- Pestañas de Género (Se llenan automáticamente desde tu archivo CSV) -->
-      <div id="filtrosGenero" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+      <!-- Pestañas de Género -->
+      <div id="filtrosGenero" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 15px;">
         <button type="button" class="btn-genero activo" onclick="cambiarGenero('Todos', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #f0c000; background: #f0c000; color: #000; font-weight: bold; cursor: pointer;">Todos</button>
+      </div>
+
+      <!-- Botón contextual para seleccionar TODO un género específico -->
+      <div id="barraSeleccionGenero" style="display: none; margin-bottom: 15px;">
+        <button type="button" id="btnSeleccionarTodoGenero" onclick="seleccionarTodoElGenero()" style="background: #252525; color: #ffcc00; border: 1px solid #f0c000; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem;">
+          ☑️ Seleccionar todas las canciones de este género
+        </button>
       </div>
 
       <!-- Contenedor con scroll para la lista -->
@@ -329,27 +365,51 @@
 
   <!-- Contacto -->
   <section id="contacto" style="padding: 40px 20px; text-align: center;">
-    <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto</h2>
-    <p style="color: #ccc; margin-bottom: 20px;">Envíanos tus datos y te responderemos a la brevedad.</p>
+    <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto y Reserva</h2>
+    <p style="color: #ccc; margin-bottom: 25px;">Completa todos los datos requeridos del evento y te responderemos a la brevedad.</p>
 
     <form action="https://formspree.io/f/mvkkydbk" method="POST">
       <input type="hidden" name="_next" value="https://wilberpatricioroseroayala-arch.github.io/wpra-sonido/">
       
-      <input type="text" name="nombre" placeholder="Tu nombre" required>
-      <input type="email" name="correo" placeholder="Tu correo" required>
-      <input type="tel" name="telefono" placeholder="Tu teléfono / WhatsApp" required>
+      <label for="nombre">Nombre completo *</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+
+      <label for="correo">Correo electrónico *</label>
+      <input type="email" id="correo" name="correo" placeholder="Ej: correo@ejemplo.com" required>
+
+      <label for="telefono">Teléfono / WhatsApp *</label>
+      <input type="tel" id="telefono" name="telefono" placeholder="Ej: 0991234567" required>
       
-      <!-- DESPLEGABLE PARA SELECCIONAR O VIAJAR EL PLAN ELEGIDO -->
+      <label for="selectPlan">Tipo de Plan deseado *</label>
       <select name="plan" id="selectPlan" required style="cursor: pointer;">
-        <option value="" disabled selected>Selecciona el Plan de tu interés.</option>
+        <option value="" disabled selected>Selecciona el Plan de tu interés...</option>
         <option value="Plan Básico ($50/h - DJ + Sonido)">Plan Básico ($50/h - DJ + Sonido)</option>
         <option value="Plan Intermedio ($60/h - DJ + Sonido + Luces)">Plan Intermedio ($60/h - DJ + Sonido + Luces)</option>
         <option value="Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)">Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)</option>
         <option value="Cotización Personalizada / Consulta General">Cotización Personalizada / Otro</option>
       </select>
 
-      <textarea name="mensaje" id="campoMensaje" rows="6" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
-      <button type="submit">Enviar</button>
+      <label for="direccion">Dirección exacta del evento *</label>
+      <input type="text" id="direccion" name="direccion_evento" placeholder="Ej: Valle de los Chillos, Quinta San Jorge / Calle y referencia" required>
+
+      <div class="fila-doble">
+        <div>
+          <label for="fecha">Fecha del evento *</label>
+          <input type="date" id="fecha" name="fecha_evento" required>
+        </div>
+        <div>
+          <label for="hora">Hora de inicio *</label>
+          <input type="time" id="hora" name="hora_evento" required>
+        </div>
+      </div>
+
+      <label for="campoRepertorio">Listado de canciones seleccionadas *</label>
+      <textarea name="listado_canciones" id="campoRepertorio" rows="6" placeholder="Selecciona tus canciones en el catálogo de arriba y presiona 'Agregar selección al formulario' (o escribe aquí las canciones/géneros que prefieres)..." required style="resize: vertical;"></textarea>
+
+      <label for="campoNotas">Comentarios o requerimientos adicionales (opcional)</label>
+      <textarea name="notas_adicionales" id="campoNotas" rows="2" placeholder="Ej: Duración estimada (horas), número de invitados, música para hora loca..." style="resize: vertical;"></textarea>
+
+      <button type="submit">Enviar Solicitud</button>
     </form>
   </section>
   
@@ -358,7 +418,6 @@
   </footer>
 
   <script>
-    // Función para auto-seleccionar el plan cuando presionan "Solicitar" en las tarjetas
     function seleccionarPlan(nombrePlan) {
       const selectElement = document.getElementById("selectPlan");
       if (selectElement) {
@@ -372,7 +431,6 @@
     let columnaOrden = "artista";
     let ordenAscendente = true;
 
-    // Lector inteligente de líneas CSV
     function parsearLineaCSV(linea, separador) {
       const resultado = [];
       let actual = "";
@@ -392,7 +450,6 @@
       return resultado;
     }
 
-    // Ordena el catálogo según la columna activa (por defecto: Artista A-Z y luego Canción A-Z)
     function ordenarCatalogo() {
       catalogoMusical.sort((a, b) => {
         const valA = (a[columnaOrden] || "").toLowerCase();
@@ -422,7 +479,6 @@
       renderizarTabla();
     }
 
-    // Carga automática desde el archivo externo musica.csv con contador en vivo
     async function cargarCSV() {
       const estado = document.getElementById("estadoCatalogo");
       const tbody = document.getElementById("tablaCanciones");
@@ -557,6 +613,33 @@
       botonPresionado.style.background = "#f0c000";
       botonPresionado.style.color = "#000";
       botonPresionado.style.borderColor = "#f0c000";
+
+      // Muestra u oculta el botón "Seleccionar todas las canciones de este género"
+      const barraGenero = document.getElementById("barraSeleccionGenero");
+      const btnTodoGenero = document.getElementById("btnSeleccionarTodoGenero");
+      if (genero === "Todos") {
+        barraGenero.style.display = "none";
+      } else {
+        const totalEnGenero = catalogoMusical.filter(c => c.genero === genero).length;
+        btnTodoGenero.innerText = `☑️ Seleccionar todas las de "${genero}" (${totalEnGenero} canciones)`;
+        barraGenero.style.display = "block";
+      }
+
+      renderizarTabla();
+    }
+
+    // Marca todas las canciones del género activo (incluso si superan el límite visual de 150)
+    function seleccionarTodoElGenero() {
+      if (generoActual === "Todos") return;
+
+      catalogoMusical.forEach(cancion => {
+        if (cancion.genero === generoActual) {
+          const idUnico = `${cancion.titulo} - ${cancion.artista} - ${cancion.genero}`;
+          cancionesElegidas.add(idUnico);
+        }
+      });
+
+      document.getElementById("contadorSeleccion").innerText = `${cancionesElegidas.size} canciones seleccionadas`;
       renderizarTabla();
     }
 
@@ -567,7 +650,7 @@
     function limpiarSeleccion() {
       cancionesElegidas.clear();
       document.getElementById("contadorSeleccion").innerText = "0 canciones seleccionadas";
-      document.getElementById("campoMensaje").value = "";
+      document.getElementById("campoRepertorio").value = "";
       renderizarTabla();
     }
 
@@ -578,13 +661,12 @@
       }
       const listaTexto = Array.from(cancionesElegidas).map(c => "• " + c).join("\n");
       
-      const cajaMensaje = document.getElementById("campoMensaje");
-      cajaMensaje.value = `Hola, deseo cotizar mi evento con el siguiente repertorio seleccionado:\n${listaTexto}\n\nDetalles adicionales (fecha/lugar): `;
+      // Inserta el listado exclusivamente en el campo dedicado al repertorio
+      document.getElementById("campoRepertorio").value = listaTexto;
       
       document.getElementById("contacto").scrollIntoView({ behavior: "smooth" });
     }
 
-    // Inicializar carrusel y carga de CSV
     document.addEventListener("DOMContentLoaded", () => {
       cargarCSV();
 
@@ -622,4 +704,3 @@
   </script>
 </body>
 </html>
-
