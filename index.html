@@ -160,6 +160,11 @@
       box-sizing: border-box;
     }
 
+    form input:focus, form select:focus, form textarea:focus {
+      outline: none;
+      border-color: #f0c000;
+    }
+
     /* Iconos de calendario y reloj visibles en fondo oscuro */
     form input[type="date"]::-webkit-calendar-picker-indicator,
     form input[type="time"]::-webkit-calendar-picker-indicator {
@@ -189,6 +194,14 @@
       border-radius: 6px;
       font-size: 1rem;
       margin-top: 5px;
+      transition: all 0.25s ease;
+    }
+
+    form button:disabled {
+      background: #3a3a3a;
+      color: #888;
+      border: 1px solid #555;
+      cursor: not-allowed;
     }
 
     footer {
@@ -311,8 +324,8 @@
   <!-- Selección Musical -->
   <section id="musica" style="padding: 50px 20px; text-align: center; background: #141414; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
     <div style="max-width: 900px; margin: 0 auto;">
-      <h2 style="color: #ffcc00; font-size: 2rem; margin-bottom: 10px;">🎵 Selección Musical para tu Evento</h2>
-      <p style="color: #ccc; margin-bottom: 10px;">Filtra por género o busca tus canciones favoritas. Ordenado alfabéticamente por artista.</p>
+      <h2 style="color: #ffcc00; font-size: 2rem; margin-bottom: 10px;">🎵 Selección Musical para tu Evento (Opcional)</h2>
+      <p style="color: #ccc; margin-bottom: 10px;">Filtra por género o busca tus canciones favoritas. Si no deseas armar una lista, se enviará como <strong>Selección Libre</strong>.</p>
       <p id="estadoCatalogo" style="color: #ffcc00; font-size: 0.9rem; margin-bottom: 20px;">Iniciando lectura del catálogo...</p>
 
       <!-- Barra de búsqueda -->
@@ -366,9 +379,9 @@
   <!-- Contacto -->
   <section id="contacto" style="padding: 40px 20px; text-align: center;">
     <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto y Reserva</h2>
-    <p style="color: #ccc; margin-bottom: 25px;">Completa todos los datos requeridos del evento y te responderemos a la brevedad.</p>
+    <p style="color: #ccc; margin-bottom: 25px;">Completa los campos obligatorios (*) para habilitar el envío de tu solicitud.</p>
 
-    <form action="https://formspree.io/f/mvkkydbk" method="POST">
+    <form id="formContacto" action="https://formspree.io/f/mvkkydbk" method="POST">
       <input type="hidden" name="_next" value="https://wilberpatricioroseroayala-arch.github.io/wpra-sonido/">
       
       <label for="nombre">Nombre completo *</label>
@@ -403,13 +416,13 @@
         </div>
       </div>
 
-      <label for="campoRepertorio">Listado de canciones seleccionadas *</label>
-      <textarea name="listado_canciones" id="campoRepertorio" rows="6" placeholder="Selecciona tus canciones en el catálogo de arriba y presiona 'Agregar selección al formulario' (o escribe aquí las canciones/géneros que prefieres)..." required style="resize: vertical;"></textarea>
+      <label for="campoRepertorio">Listado de canciones seleccionadas (Opcional)</label>
+      <textarea name="listado_canciones" id="campoRepertorio" rows="5" style="resize: vertical;">Selección Libre</textarea>
 
-      <label for="campoNotas">Comentarios o requerimientos adicionales (opcional)</label>
+      <label for="campoNotas">Comentarios o requerimientos adicionales (Opcional)</label>
       <textarea name="notas_adicionales" id="campoNotas" rows="2" placeholder="Ej: Duración estimada (horas), número de invitados, música para hora loca..." style="resize: vertical;"></textarea>
 
-      <button type="submit">Enviar Solicitud</button>
+      <button type="submit" id="btnEnviar" disabled>Completa los campos obligatorios (*)</button>
     </form>
   </section>
   
@@ -418,10 +431,30 @@
   </footer>
 
   <script>
+    // Valida en tiempo real si todos los campos requeridos están llenos y válidos
+    function verificarFormulario() {
+      const form = document.getElementById("formContacto");
+      const btnEnviar = document.getElementById("btnEnviar");
+      if (!form || !btnEnviar) return;
+
+      const camposRequeridos = form.querySelectorAll("[required]");
+      let todoCompleto = true;
+
+      camposRequeridos.forEach(campo => {
+        if (!campo.value || campo.value.trim() === "" || !campo.checkValidity()) {
+          todoCompleto = false;
+        }
+      });
+
+      btnEnviar.disabled = !todoCompleto;
+      btnEnviar.innerText = todoCompleto ? "Enviar Solicitud" : "Completa los campos obligatorios (*)";
+    }
+
     function seleccionarPlan(nombrePlan) {
       const selectElement = document.getElementById("selectPlan");
       if (selectElement) {
         selectElement.value = nombrePlan;
+        verificarFormulario();
       }
     }
 
@@ -614,7 +647,6 @@
       botonPresionado.style.color = "#000";
       botonPresionado.style.borderColor = "#f0c000";
 
-      // Muestra u oculta el botón "Seleccionar todas las canciones de este género"
       const barraGenero = document.getElementById("barraSeleccionGenero");
       const btnTodoGenero = document.getElementById("btnSeleccionarTodoGenero");
       if (genero === "Todos") {
@@ -628,7 +660,6 @@
       renderizarTabla();
     }
 
-    // Marca todas las canciones del género activo (incluso si superan el límite visual de 150)
     function seleccionarTodoElGenero() {
       if (generoActual === "Todos") return;
 
@@ -650,25 +681,38 @@
     function limpiarSeleccion() {
       cancionesElegidas.clear();
       document.getElementById("contadorSeleccion").innerText = "0 canciones seleccionadas";
-      document.getElementById("campoRepertorio").value = "";
+      document.getElementById("campoRepertorio").value = "Selección Libre";
       renderizarTabla();
     }
 
     function enviarListaAlFormulario() {
       if (cancionesElegidas.size === 0) {
-        alert("Por favor, selecciona al menos una canción de la lista.");
-        return;
+        document.getElementById("campoRepertorio").value = "Selección Libre";
+      } else {
+        const listaTexto = Array.from(cancionesElegidas).map(c => "• " + c).join("\n");
+        document.getElementById("campoRepertorio").value = listaTexto;
       }
-      const listaTexto = Array.from(cancionesElegidas).map(c => "• " + c).join("\n");
-      
-      // Inserta el listado exclusivamente en el campo dedicado al repertorio
-      document.getElementById("campoRepertorio").value = listaTexto;
       
       document.getElementById("contacto").scrollIntoView({ behavior: "smooth" });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       cargarCSV();
+
+      // Activar vigilancia en tiempo real sobre los campos del formulario
+      const form = document.getElementById("formContacto");
+      form.addEventListener("input", verificarFormulario);
+      form.addEventListener("change", verificarFormulario);
+
+      // Asegurar que si el cliente dejó el repertorio en blanco al enviar, viaje como "Selección Libre"
+      form.addEventListener("submit", () => {
+        const campoRep = document.getElementById("campoRepertorio");
+        if (!campoRep.value || campoRep.value.trim() === "") {
+          campoRep.value = "Selección Libre";
+        }
+      });
+
+      verificarFormulario();
 
       const images = document.querySelectorAll(".carousel img");
       const prev = document.querySelector(".carousel .prev");
