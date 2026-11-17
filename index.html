@@ -43,6 +43,10 @@
       font-weight: bold;
     }
 
+    nav a:hover {
+      color: #f0c000;
+    }
+
     section {
       padding: 40px;
     }
@@ -180,6 +184,7 @@
     <a href="#produccion">Producción Musical</a>
     <a href="#videos">Videos</a>
     <a href="#planes">Planes</a>
+    <a href="#musica">Selección Musical</a>
     <a href="#contacto">Contacto</a>
   </nav>
 
@@ -274,6 +279,53 @@
     </div>
   </section>
 
+  <!-- Selección Musical -->
+  <section id="musica" style="padding: 50px 20px; text-align: center; background: #141414; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <h2 style="color: #ffcc00; font-size: 2rem; margin-bottom: 10px;">🎵 Selección Musical para tu Evento</h2>
+      <p style="color: #ccc; margin-bottom: 25px;">Filtra por género o busca tus canciones favoritas. Márcalas y agrégalas a tu cotización.</p>
+
+      <!-- Barra de búsqueda -->
+      <input type="text" id="buscadorMusica" onkeyup="filtrarMusica()" placeholder="🔍 Buscar canción, artista o ritmo..." 
+        style="width: 100%; max-width: 500px; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; font-size: 1rem;">
+
+      <!-- Pestañas de Género -->
+      <div id="filtrosGenero" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <button type="button" class="btn-genero activo" onclick="cambiarGenero('Todos', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #f0c000; background: #f0c000; color: #000; font-weight: bold; cursor: pointer;">Todos</button>
+        <button type="button" class="btn-genero" onclick="cambiarGenero('Salsa & Merengue', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;">Salsa & Merengue</button>
+        <button type="button" class="btn-genero" onclick="cambiarGenero('Reggaeton & Urbano', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;">Reggaeton & Urbano</button>
+        <button type="button" class="btn-genero" onclick="cambiarGenero('Cumbia & Nacional', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;">Cumbia & Nacional</button>
+        <button type="button" class="btn-genero" onclick="cambiarGenero('Clásicos 70s/80s', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;">Clásicos 70s/80s</button>
+        <button type="button" class="btn-genero" onclick="cambiarGenero('Electrónica', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;">Electrónica</button>
+      </div>
+
+      <!-- Contenedor con scroll para la lista -->
+      <div style="max-height: 360px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; background: #1a1a1a; text-align: left;">
+        <table style="width: 100%; border-collapse: collapse; color: #eee; font-size: 0.95rem;">
+          <thead>
+            <tr style="background: #222; color: #ffcc00; position: sticky; top: 0;">
+              <th style="padding: 12px; width: 45px; text-align: center;">✔</th>
+              <th style="padding: 12px;">Canción</th>
+              <th style="padding: 12px;">Artista</th>
+              <th style="padding: 12px;">Género</th>
+            </tr>
+          </thead>
+          <tbody id="tablaCanciones">
+            <!-- El listado se genera dinámicamente desde JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Barra inferior de estado y acción -->
+      <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; background: #1e1e1e; padding: 15px 20px; border-radius: 8px; border: 1px solid #333;">
+        <span id="contadorSeleccion" style="color: #ffcc00; font-weight: bold; font-size: 1rem;">0 canciones seleccionadas</span>
+        <button type="button" onclick="enviarListaAlFormulario()" style="background: #f0c000; color: #000; border: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 0.95rem;">
+          Agregar selección al formulario ⬇
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- Contacto -->
   <section id="contacto" style="padding: 40px 20px; text-align: center;">
     <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto</h2>
@@ -295,7 +347,8 @@
         <option value="Cotización Personalizada / Consulta General">Cotización Personalizada / Otro</option>
       </select>
 
-      <textarea name="mensaje" rows="5" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
+      <textarea name="mensaje" id="campoMensaje" rows="5" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
+      <input type="hidden" name="repertorio_musical" id="campoRepertorio" value="Ninguna canción preseleccionada">
       <button type="submit">Enviar</button>
     </form>
   </section>
@@ -313,7 +366,109 @@
       }
     }
 
+    // BASE DE DATOS DE CANCIONES (Puedes añadir todas las que desees siguiendo este formato)
+    const catalogoMusical = [
+      { titulo: "La Rebelión", artista: "Joe Arroyo", genero: "Salsa & Merengue" },
+      { titulo: "Vivir Mi Vida", artista: "Marc Anthony", genero: "Salsa & Merengue" },
+      { titulo: "Suavemente", artista: "Elvis Crespo", genero: "Salsa & Merengue" },
+      { titulo: "La Bilirrubina", artista: "Juan Luis Guerra", genero: "Salsa & Merengue" },
+      { titulo: "Danza Kuduro", artista: "Don Omar", genero: "Reggaeton & Urbano" },
+      { titulo: "Gasolina", artista: "Daddy Yankee", genero: "Reggaeton & Urbano" },
+      { titulo: "Tití Me Preguntó", artista: "Bad Bunny", genero: "Reggaeton & Urbano" },
+      { titulo: "Provenza", artista: "Karol G", genero: "Reggaeton & Urbano" },
+      { titulo: "El Aguajal", artista: "Los Shapis / Jayac", genero: "Cumbia & Nacional" },
+      { titulo: "Cariñito", artista: "Los Hijos del Sol", genero: "Cumbia & Nacional" },
+      { titulo: "La Pollera Colorá", artista: "Wilson Choperena", genero: "Cumbia & Nacional" },
+      { titulo: "Nuestro Juramento", artista: "Julio Jaramillo", genero: "Cumbia & Nacional" },
+      { titulo: "Stayin' Alive", artista: "Bee Gees", genero: "Clásicos 70s/80s" },
+      { titulo: "Billie Jean", artista: "Michael Jackson", genero: "Clásicos 70s/80s" },
+      { titulo: "Dancing Queen", artista: "ABBA", genero: "Clásicos 70s/80s" },
+      { titulo: "De Música Ligera", artista: "Soda Stereo", genero: "Clásicos 70s/80s" },
+      { titulo: "Titanium", artista: "David Guetta ft. Sia", genero: "Electrónica" },
+      { titulo: "Levels", artista: "Avicii", genero: "Electrónica" },
+      { titulo: "One More Time", artista: "Daft Punk", genero: "Electrónica" }
+    ];
+
+    let generoActual = "Todos";
+    let cancionesElegidas = new Set();
+
+    function renderizarTabla() {
+      const tbody = document.getElementById("tablaCanciones");
+      const textoBusqueda = document.getElementById("buscadorMusica").value.toLowerCase();
+      tbody.innerHTML = "";
+
+      catalogoMusical.forEach((cancion) => {
+        const idUnico = `${cancion.titulo} - ${cancion.artista}`;
+        const coincideGenero = generoActual === "Todos" || cancion.genero === generoActual;
+        const coincideTexto = cancion.titulo.toLowerCase().includes(textoBusqueda) || 
+                              cancion.artista.toLowerCase().includes(textoBusqueda) ||
+                              cancion.genero.toLowerCase().includes(textoBusqueda);
+
+        if (coincideGenero && coincideTexto) {
+          const estaMarcada = cancionesElegidas.has(idUnico) ? "checked" : "";
+          const fila = `
+            <tr style="border-bottom: 1px solid #2b2b2b;">
+              <td style="padding: 10px; text-align: center;">
+                <input type="checkbox" ${estaMarcada} onchange="alternarCancion('${idUnico.replace(/'/g, "\\'")}')" style="width: 18px; height: 18px; accent-color: #f0c000; cursor: pointer;">
+              </td>
+              <td style="padding: 10px; font-weight: bold; color: #fff;">${cancion.titulo}</td>
+              <td style="padding: 10px; color: #ccc;">${cancion.artista}</td>
+              <td style="padding: 10px;"><span style="background: #2a2a2a; color: #ffcc00; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">${cancion.genero}</span></td>
+            </tr>
+          `;
+          tbody.innerHTML += fila;
+        }
+      });
+    }
+
+    function alternarCancion(idUnico) {
+      if (cancionesElegidas.has(idUnico)) {
+        cancionesElegidas.delete(idUnico);
+      } else {
+        cancionesElegidas.add(idUnico);
+      }
+      document.getElementById("contadorSeleccion").innerText = `${cancionesElegidas.size} canciones seleccionadas`;
+    }
+
+    function cambiarGenero(genero, botonPresionado) {
+      generoActual = genero;
+      document.querySelectorAll(".btn-genero").forEach(btn => {
+        btn.style.background = "#222";
+        btn.style.color = "#fff";
+        btn.style.borderColor = "#444";
+      });
+      botonPresionado.style.background = "#f0c000";
+      botonPresionado.style.color = "#000";
+      botonPresionado.style.borderColor = "#f0c000";
+      renderizarTabla();
+    }
+
+    function filtrarMusica() {
+      renderizarTabla();
+    }
+
+    function enviarListaAlFormulario() {
+      if (cancionesElegidas.size === 0) {
+        alert("Por favor, selecciona al menos una canción de la lista.");
+        return;
+      }
+      const listaTexto = Array.from(cancionesElegidas).map(c => "• " + c).join("\n");
+      
+      // Guarda en el campo oculto para Formspree
+      document.getElementById("campoRepertorio").value = "\n" + listaTexto;
+      
+      // También lo muestra visualmente en el cuadro de mensaje del cliente
+      const cajaMensaje = document.getElementById("campoMensaje");
+      cajaMensaje.value = `Hola, deseo cotizar mi evento con el siguiente repertorio seleccionado:\n${listaTexto}\n\nDetalles adicionales (fecha/lugar): `;
+      
+      // Desplaza suavemente hasta Contacto
+      document.getElementById("contacto").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Inicializar carrusel y tabla al cargar la página
     document.addEventListener("DOMContentLoaded", () => {
+      renderizarTabla();
+
       const images = document.querySelectorAll(".carousel img");
       const prev = document.querySelector(".carousel .prev");
       const next = document.querySelector(".carousel .next");
