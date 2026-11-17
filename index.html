@@ -279,11 +279,11 @@
     </div>
   </section>
 
-  <!-- Selección Musical (Conectada a musica.csv con monitor de progreso) -->
+  <!-- Selección Musical (Conectada a musica.csv con ordenamiento por Artista) -->
   <section id="musica" style="padding: 50px 20px; text-align: center; background: #141414; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
     <div style="max-width: 900px; margin: 0 auto;">
       <h2 style="color: #ffcc00; font-size: 2rem; margin-bottom: 10px;">🎵 Selección Musical para tu Evento</h2>
-      <p style="color: #ccc; margin-bottom: 10px;">Filtra por género o busca tus canciones favoritas. Márcalas y agrégalas a tu cotización.</p>
+      <p style="color: #ccc; margin-bottom: 10px;">Filtra por género o busca tus canciones favoritas. Ordenado alfabéticamente por artista.</p>
       <p id="estadoCatalogo" style="color: #ffcc00; font-size: 0.9rem; margin-bottom: 20px;">Iniciando lectura del catálogo...</p>
 
       <!-- Barra de búsqueda -->
@@ -299,11 +299,11 @@
       <div style="max-height: 360px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; background: #1a1a1a; text-align: left;">
         <table style="width: 100%; border-collapse: collapse; color: #eee; font-size: 0.95rem;">
           <thead>
-            <tr style="background: #222; color: #ffcc00; position: sticky; top: 0;">
+            <tr style="background: #222; color: #ffcc00; position: sticky; top: 0; user-select: none;">
               <th style="padding: 12px; width: 45px; text-align: center;">✔</th>
-              <th style="padding: 12px;">Canción</th>
-              <th style="padding: 12px;">Artista</th>
-              <th style="padding: 12px;">Género</th>
+              <th onclick="cambiarOrden('titulo')" style="padding: 12px; cursor: pointer;" title="Ordenar por Canción">Canción <span id="iconoOrdenTitulo"></span></th>
+              <th onclick="cambiarOrden('artista')" style="padding: 12px; cursor: pointer;" title="Ordenar por Artista">Artista <span id="iconoOrdenArtista">▲</span></th>
+              <th onclick="cambiarOrden('genero')" style="padding: 12px; cursor: pointer;" title="Ordenar por Género">Género <span id="iconoOrdenGenero"></span></th>
             </tr>
           </thead>
           <tbody id="tablaCanciones">
@@ -370,8 +370,10 @@
     let catalogoMusical = [];
     let generoActual = "Todos";
     let cancionesElegidas = new Set();
+    let columnaOrden = "artista"; // Orden por defecto: Artista
+    let ordenAscendente = true;
 
-    // Lector inteligente de líneas CSV (soporta comas, punto y coma y textos entre comillas)
+    // Lector inteligente de líneas CSV
     function parsearLineaCSV(linea, separador) {
       const resultado = [];
       let actual = "";
@@ -389,6 +391,37 @@
       }
       resultado.push(actual.trim());
       return resultado;
+    }
+
+    // Ordena el catálogo según la columna activa (por defecto: Artista A-Z y luego Canción A-Z)
+    function ordenarCatalogo() {
+      catalogoMusical.sort((a, b) => {
+        const valA = (a[columnaOrden] || "").toLowerCase();
+        const valB = (b[columnaOrden] || "").toLowerCase();
+        
+        const comparacion = valA.localeCompare(valB, 'es', { sensitivity: 'base' });
+        if (comparacion !== 0) {
+          return ordenAscendente ? comparacion : -comparacion;
+        }
+        // Desempate secundario por título de canción
+        return a.titulo.toLowerCase().localeCompare(b.titulo.toLowerCase(), 'es', { sensitivity: 'base' });
+      });
+    }
+
+    function cambiarOrden(columna) {
+      if (columnaOrden === columna) {
+        ordenAscendente = !ordenAscendente;
+      } else {
+        columnaOrden = columna;
+        ordenAscendente = true;
+      }
+
+      document.getElementById("iconoOrdenTitulo").innerText = columnaOrden === "titulo" ? (ordenAscendente ? "▲" : "▼") : "";
+      document.getElementById("iconoOrdenArtista").innerText = columnaOrden === "artista" ? (ordenAscendente ? "▲" : "▼") : "";
+      document.getElementById("iconoOrdenGenero").innerText = columnaOrden === "genero" ? (ordenAscendente ? "▲" : "▼") : "";
+
+      ordenarCatalogo();
+      renderizarTabla();
     }
 
     // Carga automática desde el archivo externo musica.csv con contador en vivo
@@ -422,7 +455,6 @@
         const generosUnicos = new Set();
         catalogoMusical = [];
 
-        // Procesa por lotes de 200 registros para actualizar el contador visual en vivo
         for (let i = 1; i < lineas.length; i++) {
           const cols = parsearLineaCSV(lineas[i], separador);
           if (cols.length >= 3 && cols[0] !== "") {
@@ -439,9 +471,12 @@
           }
         }
 
-        // Genera los botones de géneros dinámicamente
+        // Ordenar alfabéticamente por Artista (A-Z) antes de mostrar
+        ordenarCatalogo();
+
+        // Genera los botones de géneros ordenados alfabéticamente
         const contenedorFiltros = document.getElementById("filtrosGenero");
-        generosUnicos.forEach(gen => {
+        Array.from(generosUnicos).sort((a, b) => a.localeCompare(b, 'es')).forEach(gen => {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "btn-genero";
@@ -451,7 +486,7 @@
           contenedorFiltros.appendChild(btn);
         });
 
-        estado.innerText = `✅ Catálogo listo: ${catalogoMusical.length} canciones cargadas en ${generosUnicos.size} géneros.`;
+        estado.innerText = `✅ Catálogo listo: ${catalogoMusical.length} canciones ordenadas por Artista (A-Z).`;
         renderizarTabla();
 
       } catch (error) {
@@ -593,4 +628,3 @@
   </script>
 </body>
 </html>
-
