@@ -279,6 +279,535 @@
     </div>
   </section>
 
+  <!-- Selección Musical (Conectada a musica.csv) -->
+  <section id="musica" style="padding: 50px 20px; text-align: center; background: #141414; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <h2 style="color: #ffcc00; font-size: 2rem; margin-bottom: 10px;">🎵 Selección Musical para tu Evento</h2>
+      <p style="color: #ccc; margin-bottom: 10px;">Filtra por género o busca tus canciones favoritas. Márcalas y agrégalas a tu cotización.</p>
+      <p id="estadoCatalogo" style="color: #888; font-size: 0.85rem; margin-bottom: 20px;">Cargando catálogo musical...</p>
+
+      <!-- Barra de búsqueda -->
+      <input type="text" id="buscadorMusica" onkeyup="filtrarMusica()" placeholder="🔍 Buscar canción, artista o ritmo..." 
+        style="width: 100%; max-width: 500px; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; font-size: 1rem;">
+
+      <!-- Pestañas de Género (Se llenan automáticamente desde tu archivo CSV) -->
+      <div id="filtrosGenero" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <button type="button" class="btn-genero activo" onclick="cambiarGenero('Todos', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #f0c000; background: #f0c000; color: #000; font-weight: bold; cursor: pointer;">Todos</button>
+      </div>
+
+      <!-- Contenedor con scroll para la lista -->
+      <div style="max-height: 360px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; background: #1a1a1a; text-align: left;">
+        <table style="width: 100%; border-collapse: collapse; color: #eee; font-size: 0.95rem;">
+          <thead>
+            <tr style="background: #222; color: #ffcc00; position: sticky; top: 0;">
+              <th style="padding: 12px; width: 45px; text-align: center;">✔</th>
+              <th style="padding: 12px;">Canción</th>
+              <th style="padding: 12px;">Artista</th>
+              <th style="padding: 12px;">Género</th>
+            </tr>
+          </thead>
+          <tbody id="tablaCanciones">
+            <tr><td colspan="4" style="padding: 20px; text-align: center; color: #888;">Cargando canciones desde musica.csv...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Barra inferior de estado y acción -->
+      <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; background: #1e1e1e; padding: 15px 20px; border-radius: 8px; border: 1px solid #333;">
+        <span id="contadorSeleccion" style="color: #ffcc00; font-weight: bold; font-size: 1rem;">0 canciones seleccionadas</span>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" onclick="limpiarSeleccion()" style="background: transparent; color: #ccc; border: 1px solid #555; padding: 12px 18px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+            🗑️ Limpiar selección
+          </button>
+          <button type="button" onclick="enviarListaAlFormulario()" style="background: #f0c000; color: #000; border: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 0.95rem;">
+            Agregar selección al formulario ⬇
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" style="padding: 40px 20px; text-align: center;">
+    <h2 style="color: #ffcc00; margin-bottom: 10px;">📩 Contacto</h2>
+    <p style="color: #ccc; margin-bottom: 20px;">Envíanos tus datos y te responderemos a la brevedad.</p>
+
+    <form action="https://formspree.io/f/mvkkydbk" method="POST">
+      <input type="hidden" name="_next" value="https://wilberpatricioroseroayala-arch.github.io/wpra-sonido/">
+      
+      <input type="text" name="nombre" placeholder="Tu nombre" required>
+      <input type="email" name="correo" placeholder="Tu correo" required>
+      <input type="tel" name="telefono" placeholder="Tu teléfono / WhatsApp" required>
+      
+      <!-- DESPLEGABLE PARA SELECCIONAR O VIAJAR EL PLAN ELEGIDO -->
+      <select name="plan" id="selectPlan" required style="cursor: pointer;">
+        <option value="" disabled selected>Selecciona el Plan de tu interés.</option>
+        <option value="Plan Básico ($50/h - DJ + Sonido)">Plan Básico ($50/h - DJ + Sonido)</option>
+        <option value="Plan Intermedio ($60/h - DJ + Sonido + Luces)">Plan Intermedio ($60/h - DJ + Sonido + Luces)</option>
+        <option value="Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)">Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)</option>
+        <option value="Cotización Personalizada / Consulta General">Cotización Personalizada / Otro</option>
+      </select>
+
+      <textarea name="mensaje" id="campoMensaje" rows="5" placeholder="Tu mensaje o detalles del evento" required style="resize: vertical;"></textarea>
+      <input type="hidden" name="repertorio_musical" id="campoRepertorio" value="Ninguna canción preseleccionada">
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+  
+  <footer>
+    <p>&copy; 2026 Eventos y Sonido - W&R</p>
+  </footer>
+
+  <script>
+    // Función para auto-seleccionar el plan cuando presionan "Solicitar" en las tarjetas
+    function seleccionarPlan(nombrePlan) {
+      const selectElement = document.getElementById("selectPlan");
+      if (selectElement) {
+        selectElement.value = nombrePlan;
+      }
+    }
+
+    let catalogoMusical = [];
+    let generoActual = "Todos";
+    let cancionesElegidas = new Set();
+
+    // Lector inteligente de líneas CSV (soporta comas, punto y coma y textos entre comillas)
+    function parsearLineaCSV(linea, separador) {
+      const resultado = [];
+      let actual = "";
+      let dentroComillas = false;
+      for (let i = 0; i < linea.length; i++) {
+        const char = linea[i];
+        if (char === '"') {
+          dentroComillas = !dentroComillas;
+        } else if (char === separador && !dentroComillas) {
+          resultado.push(actual.trim());
+          actual = "";
+        } else {
+          actual += char;
+        }
+      }
+      resultado.push(actual.trim());
+      return resultado;
+    }
+
+    // Carga automática desde el archivo externo musica.csv
+    async function cargarCSV() {
+      try {
+        const respuesta = await fetch("musica.csv?v=" + new Date().getTime());
+        if (!respuesta.ok) throw new Error("No se encontró el archivo musica.csv");
+        
+        const texto = await respuesta.text();
+        const lineas = texto.split(/\r?\n/).filter(l => l.trim() !== "");
+        if (lineas.length < 2) throw new Error("El archivo CSV está vacío");
+
+        const separador = lineas[0].includes(";") ? ";" : ",";
+        const generosUnicos = new Set();
+
+        catalogoMusical = [];
+        for (let i = 1; i < lineas.length; i++) {
+          const cols = parsearLineaCSV(lineas[i], separador);
+          if (cols.length >= 3 && cols[0] !== "") {
+            const titulo = cols[0];
+            const artista = cols[1];
+            const genero = cols[2];
+            catalogoMusical.push({ titulo, artista, genero });
+            generosUnicos.add(genero);
+          }
+        }
+
+        // Genera los botones de géneros dinámicamente según lo que exista en tu CSV
+        const contenedorFiltros = document.getElementById("filtrosGenero");
+        generosUnicos.forEach(gen => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn-genero";
+          btn.innerText = gen;
+          btn.style.cssText = "padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;";
+          btn.onclick = function() { cambiarGenero(gen, this); };
+          contenedorFiltros.appendChild(btn);
+        });
+
+        document.getElementById("estadoCatalogo").innerText = `Catálogo disponible: ${catalogoMusical.length} canciones listas para elegir.`;
+        renderizarTabla();
+      } catch (error) {
+        document.getElementById("estadoCatalogo").innerText = "⚠️ No se pudo cargar 'musica.csv'. Verifica que esté en la misma carpeta que index.html.";
+        document.getElementById("tablaCanciones").innerHTML = `<tr><td colspan="4" style="padding: 20px; text-align: center; color: #ff6666;">Error al leer <strong>musica.csv</strong> en GitHub.</td></tr>`;
+      }
+    }
+
+    function renderizarTabla() {
+      const tbody = document.getElementById("tablaCanciones");
+      const textoBusqueda = document.getElementById("buscadorMusica").value.toLowerCase();
+      tbody.innerHTML = "";
+
+      let coincidencias = 0;
+      const limiteVisual = 150;
+      let htmlAcumulado = "";
+
+      for (let i = 0; i < catalogoMusical.length; i++) {
+        const cancion = catalogoMusical[i];
+        const coincideGenero = generoActual === "Todos" || cancion.genero === generoActual;
+        const coincideTexto = cancion.titulo.toLowerCase().includes(textoBusqueda) || 
+                              cancion.artista.toLowerCase().includes(textoBusqueda) ||
+                              cancion.genero.toLowerCase().includes(textoBusqueda);
+
+        if (coincideGenero && coincideTexto) {
+          coincidencias++;
+          if (coincidencias <= limiteVisual) {
+            const idUnico = `${cancion.titulo} - ${cancion.artista}`;
+            const estaMarcada = cancionesElegidas.has(idUnico) ? "checked" : "";
+            const idSeguro = idUnico.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            
+            htmlAcumulado += `
+              <tr style="border-bottom: 1px solid #2b2b2b;">
+                <td style="padding: 10px; text-align: center;">
+                  <input type="checkbox" ${estaMarcada} onchange="alternarCancion('${idSeguro}')" style="width: 18px; height: 18px; accent-color: #f0c000; cursor: pointer;">
+                </td>
+                <td style="padding: 10px; font-weight: bold; color: #fff;">${cancion.titulo}</td>
+                <td style="padding: 10px; color: #ccc;">${cancion.artista}</td>
+                <td style="padding: 10px;"><span style="background: #2a2a2a; color: #ffcc00; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">${cancion.genero}</span></td>
+              </tr>
+            `;
+          }
+        }
+      }
+
+      if (coincidencias === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="padding: 20px; text-align: center; color: #888;">No se encontraron canciones con esa búsqueda.</td></tr>`;
+      } else {
+        if (coincidencias > limiteVisual) {
+          htmlAcumulado += `<tr><td colspan="4" style="padding: 12px; text-align: center; color: #ffcc00; background: #222; font-size: 0.85rem;">Mostrando los primeros ${limiteVisual} resultados de ${coincidencias}. Usa el buscador arriba para encontrar una canción específica.</td></tr>`;
+        }
+        tbody.innerHTML = htmlAcumulado;
+      }
+    }
+
+    function alternarCancion(idUnico) {
+      if (cancionesElegidas.has(idUnico)) {
+        cancionesElegidas.delete(idUnico);
+      } else {
+        cancionesElegidas.add(idUnico);
+      }
+      document.getElementById("contadorSeleccion").innerText = `${cancionesElegidas.size} canciones seleccionadas`;
+    }
+
+    function cambiarGenero(genero, botonPresionado) {
+      generoActual = genero;
+      document.querySelectorAll(".btn-genero").forEach(btn => {
+        btn.style.background = "#222";
+        btn.style.color = "#fff";
+        btn.style.borderColor = "#444";
+      });
+      botonPresionado.style.background = "#f0c000";
+      botonPresionado.style.color = "#000";
+      botonPresionado.style.borderColor = "#f0c000";
+      renderizarTabla();
+    }
+
+    function filtrarMusica() {
+      renderizarTabla();
+    }
+
+    function limpiarSeleccion() {
+      cancionesElegidas.clear();
+      document.getElementById("contadorSeleccion").innerText = "0 canciones seleccionadas";
+      document.getElementById("campoRepertorio").value = "Ninguna canción preseleccionada";
+      document.getElementById("campoMensaje").value = "";
+      renderizarTabla();
+    }
+
+    function enviarListaAlFormulario() {
+      if (cancionesElegidas.size === 0) {
+        alert("Por favor, selecciona al menos una canción de la lista.");
+        return;
+      }
+      const listaTexto = Array.from
+        
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos y Sonido - W&R</title>
+  <style>
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: #fff;
+    }
+
+    header {
+      background: linear-gradient(to right, #000, #222);
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #f0c000;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2em;
+      color: #ddd;
+    }
+
+    nav {
+      background: #222;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #f0c000;
+    }
+
+    section {
+      padding: 40px;
+    }
+
+    .servicio h2 {
+      color: #f0c000;
+    }
+
+    /* Carrusel */
+    .carousel {
+      position: relative;
+      max-width: 900px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 10px;
+      height: auto;
+    }
+
+    .carousel img {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .carousel img.active {
+      opacity: 1;
+      position: relative;
+    }
+
+    .carousel button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: #fff;
+      font-size: 2em;
+      cursor: pointer;
+      padding: 5px 10px;
+      z-index: 10;
+    }
+
+    .carousel .prev { left: 10px; }
+    .carousel .next { right: 10px; }
+
+    /* Planes */
+    .planes {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .plan {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+    }
+
+    .plan h3 {
+      color: #f0c000;
+    }
+
+    .plan p {
+      margin: 10px 0;
+    }
+
+    .plan button, .plan a {
+      display: inline-block;
+      background: #f0c000;
+      color: #000;
+      text-decoration: none;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+
+    /* Contacto */
+    form {
+      max-width: 500px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    form input, form select, form textarea {
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 6px;
+      background: #222;
+      color: #fff;
+      font-family: inherit;
+    }
+
+    form button {
+      background: #f0c000;
+      color: #000;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    footer {
+      background: #000;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Eventos y Sonido - W&R</h1>
+    <p>Transformamos tus momentos en experiencias inolvidables.</p>
+    <!-- BOTÓN DIRECTO A SERVICIOS -->
+    <a href="#servicios" style="display: inline-block; margin-top: 15px; padding: 12px 24px; background: #f0c000; color: #000; font-weight: bold; text-decoration: none; border-radius: 6px;">Ver Servicios de Ingeniería</a>
+  </header>
+
+  <nav>
+    <a href="#servicios">Ingeniería & Servicios</a>
+    <a href="#eventos">Eventos Sociales</a>
+    <a href="#produccion">Producción Musical</a>
+    <a href="#videos">Videos</a>
+    <a href="#planes">Planes</a>
+    <a href="#musica">Selección Musical</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <!-- Sección de Ingeniería & Servicios -->
+  <section id="servicios" style="padding: 60px 20px; text-align: center; background: #111;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <h2 style="color: #ffcc00; font-size: 2.2rem; margin-bottom: 5px;">🎓 Ingeniería & Eventos</h2>
+      <h3 style="color: #fff; font-size: 1.4rem; margin-bottom: 20px; font-weight: normal;">
+        Por el <strong>Ing. Ricardo Rosero U.</strong>
+      </h3>
+      <p style="color: #ccc; font-size: 1.1rem; line-height: 1.6; margin-bottom: 40px;">
+        Graduado en <strong>Ingeniería de Sonido en la UDLA (Quito)</strong>, ofrezco un servicio con respaldo técnico, acústico y profesional. Planificamos y ejecutamos eventos sociales, corporativos y artísticos con un estándar superior y equipamiento de primera línea.
+      </p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-width: 1200px; margin: 0 auto;">
+      <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 30px; width: 320px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        <h3 style="color: #ffcc00; margin-bottom: 15px; font-size: 1.25rem;">🎛️ Ingeniería de Sonido</h3>
+        <p style="color: #ddd; font-size: 0.95rem; line-height: 1.6;">
+          Diseño y cobertura acústica, refuerzo sonoro, microfonía y calibración de sistemas. Garantizamos un sonido de alta fidelidad, libre de distorsiones o acoples, ideal para todo tipo de espacios.
+        </p>
+      </div>
+
+      <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 30px; width: 320px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        <h3 style="color: #ffcc00; margin-bottom: 15px; font-size: 1.25rem;">🎉 Planificación de Eventos</h3>
+        <p style="color: #ddd; font-size: 0.95rem; line-height: 1.6;">
+          Coordinación integral de eventos con música, sonido, iluminación móvil y efectos. Creamos un ambiente y una logística impecable para bodas, quinceañeras, fiestas privadas y corporativos.
+        </p>
+      </div>
+
+      <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 30px; width: 320px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        <h3 style="color: #ffcc00; margin-bottom: 15px; font-size: 1.25rem;">🔈 Equipamiento de Primera</h3>
+        <p style="color: #ddd; font-size: 0.95rem; line-height: 1.6;">
+          Sistemas activos, consolas digitales, iluminación DMX y estructuras profesionales. No improvisamos: llevamos marcas de alta gama que aseguran potencia y un gran impacto visual.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Eventos Sociales -->
+  <section id="eventos" style="text-align: center; padding: 40px 20px;">
+    <h2>🎶 Eventos Sociales</h2>
+    <p>DJ profesional, música personalizada, sonido de alta calidad e iluminación dinámica para tus fiestas y celebraciones.</p>
+    <div class="carousel" style="margin: 0 auto; max-width: 900px;">
+      <img src="EventosSociales1.jpg" class="active" alt="Evento social 1" style="margin: 0 auto; display: block;">
+      <img src="EventosSociales2.jpg" alt="Evento social 2" style="margin: 0 auto;">
+      <img src="EventosSociales3.jpg" alt="Evento social 3" style="margin: 0 auto;">
+      <button class="prev">&#10094;</button>
+      <button class="next">&#10095;</button>
+    </div>
+  </section>
+
+  <!-- Producción Musical -->
+  <section id="produccion" style="text-align: center; padding: 40px 20px;">
+    <h2>🎧 Producción Musical</h2>
+    <p>Asesoramiento en mezcla, masterización y creación de proyectos musicales con enfoque profesional.</p>
+    <img src="ProduccionMusical.jpg" alt="Estudio de producción musical profesional" style="width: 100%; max-width: 900px; border-radius: 10px; display: block; margin: 0 auto;">
+  </section>
+
+  <!-- Videos -->
+  <section id="videos" style="padding: 40px 20px; text-align: center;">
+    <h2 style="color: #ffcc00; margin-bottom: 10px;">🎬 Evento en Vivo</h2>
+    <p style="color: #ccc; margin-bottom: 20px;">Mira la experiencia de sonido e iluminación en acción</p>
+    <video controls style="width: 100%; max-width: 800px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.6); background: #000;">
+      <source src="WhiteWeddingE1.webm" type="video/webm">
+      Tu navegador no soporta la reproducción de video HTML5.
+    </video>
+  </section>
+
+  <!-- Planes -->
+  <section id="planes" style="text-align: center;">
+    <h2>💡 Nuestros Planes (Costo/Hora)</h2>
+    <div class="planes">
+      <div class="plan">
+        <h3>Básico</h3>
+        <p>DJ + Sonido</p>
+        <p>$50</p>
+        <a href="#contacto" onclick="seleccionarPlan('Plan Básico ($50/h - DJ + Sonido)')">Solicitar</a>
+      </div>
+      <div class="plan">
+        <h3>Intermedio</h3>
+        <p>DJ + Sonido + Luces</p>
+        <p>$60</p>
+        <a href="#contacto" onclick="seleccionarPlan('Plan Intermedio ($60/h - DJ + Sonido + Luces)')">Solicitar</a>
+      </div>
+      <div class="plan">
+        <h3>Premium</h3>
+        <p>DJ + Sonido + Luces + Pantallas</p>
+        <p>$70</p>
+        <a href="#contacto" onclick="seleccionarPlan('Plan Premium ($70/h - DJ + Sonido + Luces + Pantallas)')">Solicitar</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Selección Musical -->
   <section id="musica" style="padding: 50px 20px; text-align: center; background: #141414; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
     <div style="max-width: 900px; margin: 0 auto;">
