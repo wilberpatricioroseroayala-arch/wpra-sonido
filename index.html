@@ -514,7 +514,7 @@
         if (coincideGenero && coincideTexto) {
           coincidencias++;
           if (coincidencias <= limiteVisual) {
-            const idUnico = `${cancion.titulo} - ${cancion.artista}`;
+            const idUnico = `${cancion.titulo} - ${cancion.artista} [${cancion.genero}]`;
             const estaMarcada = cancionesElegidas.has(idUnico) ? "checked" : "";
             const idSeguro = idUnico.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
             
