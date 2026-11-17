@@ -165,7 +165,6 @@
       border-color: #f0c000;
     }
 
-    /* Iconos de calendario y reloj visibles en fondo oscuro */
     form input[type="date"]::-webkit-calendar-picker-indicator,
     form input[type="time"]::-webkit-calendar-picker-indicator {
       filter: invert(1);
@@ -337,9 +336,9 @@
         <button type="button" class="btn-genero activo" onclick="cambiarGenero('Todos', this)" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #f0c000; background: #f0c000; color: #000; font-weight: bold; cursor: pointer;">Todos</button>
       </div>
 
-      <!-- Botón contextual para seleccionar TODO un género específico -->
+      <!-- Botón interruptor para seleccionar/desmarcar TODO un género específico -->
       <div id="barraSeleccionGenero" style="display: none; margin-bottom: 15px;">
-        <button type="button" id="btnSeleccionarTodoGenero" onclick="seleccionarTodoElGenero()" style="background: #252525; color: #ffcc00; border: 1px solid #f0c000; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem;">
+        <button type="button" id="btnSeleccionarTodoGenero" onclick="alternarTodoElGenero()" style="background: #252525; color: #ffcc00; border: 1px solid #f0c000; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: all 0.2s ease;">
           ☑️ Seleccionar todas las canciones de este género
         </button>
       </div>
@@ -431,7 +430,6 @@
   </footer>
 
   <script>
-    // Valida en tiempo real si todos los campos requeridos están llenos y válidos
     function verificarFormulario() {
       const form = document.getElementById("formContacto");
       const btnEnviar = document.getElementById("btnEnviar");
@@ -580,6 +578,33 @@
       }
     }
 
+    // Actualiza el texto y apariencia del botón interruptor según si todo el género ya está marcado
+    function actualizarEstadoBotonGenero() {
+      const barraGenero = document.getElementById("barraSeleccionGenero");
+      const btnTodoGenero = document.getElementById("btnSeleccionarTodoGenero");
+
+      if (generoActual === "Todos") {
+        barraGenero.style.display = "none";
+        return;
+      }
+
+      const cancionesDelGenero = catalogoMusical.filter(c => c.genero === generoActual);
+      const totalEnGenero = cancionesDelGenero.length;
+      const todasMarcadas = totalEnGenero > 0 && cancionesDelGenero.every(c => 
+        cancionesElegidas.has(`${c.titulo} - ${c.artista} - ${c.genero}`)
+      );
+
+      if (todasMarcadas) {
+        btnTodoGenero.innerText = `⬜ Desmarcar todas las de "${generoActual}" (${totalEnGenero} canciones)`;
+        btnTodoGenero.style.background = "#3a2e00";
+      } else {
+        btnTodoGenero.innerText = `☑️ Seleccionar todas las de "${generoActual}" (${totalEnGenero} canciones)`;
+        btnTodoGenero.style.background = "#252525";
+      }
+
+      barraGenero.style.display = "block";
+    }
+
     function renderizarTabla() {
       const tbody = document.getElementById("tablaCanciones");
       const textoBusqueda = document.getElementById("buscadorMusica").value.toLowerCase();
@@ -625,6 +650,8 @@
         }
         tbody.innerHTML = htmlAcumulado;
       }
+
+      actualizarEstadoBotonGenero();
     }
 
     function alternarCancion(idUnico) {
@@ -634,6 +661,7 @@
         cancionesElegidas.add(idUnico);
       }
       document.getElementById("contadorSeleccion").innerText = `${cancionesElegidas.size} canciones seleccionadas`;
+      actualizarEstadoBotonGenero();
     }
 
     function cambiarGenero(genero, botonPresionado) {
@@ -647,25 +675,23 @@
       botonPresionado.style.color = "#000";
       botonPresionado.style.borderColor = "#f0c000";
 
-      const barraGenero = document.getElementById("barraSeleccionGenero");
-      const btnTodoGenero = document.getElementById("btnSeleccionarTodoGenero");
-      if (genero === "Todos") {
-        barraGenero.style.display = "none";
-      } else {
-        const totalEnGenero = catalogoMusical.filter(c => c.genero === genero).length;
-        btnTodoGenero.innerText = `☑️ Seleccionar todas las de "${genero}" (${totalEnGenero} canciones)`;
-        barraGenero.style.display = "block";
-      }
-
       renderizarTabla();
     }
 
-    function seleccionarTodoElGenero() {
+    // Interruptor: si ya están todas marcadas las desmarca; si falta alguna las marca todas
+    function alternarTodoElGenero() {
       if (generoActual === "Todos") return;
 
-      catalogoMusical.forEach(cancion => {
-        if (cancion.genero === generoActual) {
-          const idUnico = `${cancion.titulo} - ${cancion.artista} - ${cancion.genero}`;
+      const cancionesDelGenero = catalogoMusical.filter(c => c.genero === generoActual);
+      const todasMarcadas = cancionesDelGenero.length > 0 && cancionesDelGenero.every(c => 
+        cancionesElegidas.has(`${c.titulo} - ${c.artista} - ${c.genero}`)
+      );
+
+      cancionesDelGenero.forEach(cancion => {
+        const idUnico = `${cancion.titulo} - ${cancion.artista} - ${cancion.genero}`;
+        if (todasMarcadas) {
+          cancionesElegidas.delete(idUnico);
+        } else {
           cancionesElegidas.add(idUnico);
         }
       });
@@ -699,12 +725,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       cargarCSV();
 
-      // Activar vigilancia en tiempo real sobre los campos del formulario
       const form = document.getElementById("formContacto");
       form.addEventListener("input", verificarFormulario);
       form.addEventListener("change", verificarFormulario);
 
-      // Asegurar que si el cliente dejó el repertorio en blanco al enviar, viaje como "Selección Libre"
       form.addEventListener("submit", () => {
         const campoRep = document.getElementById("campoRepertorio");
         if (!campoRep.value || campoRep.value.trim() === "") {
