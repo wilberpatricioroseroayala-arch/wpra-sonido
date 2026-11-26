@@ -26,11 +26,15 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-main);
       color: var(--text-main);
-      padding-bottom: 145px;
+      padding-bottom: 165px;
       line-height: 1.4;
     }
 
@@ -38,10 +42,10 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(11, 17, 22, 0.96);
+      background: rgba(11, 17, 22, 0.97);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 12px 16px 10px;
+      padding: 12px 14px 8px;
     }
 
     .brand-row {
@@ -97,7 +101,7 @@
 
     .search-box {
       position: relative;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .search-box input {
@@ -105,7 +109,7 @@
       background-color: var(--bg-input);
       border: 1.5px solid #2a3f4d;
       border-radius: 10px;
-      padding: 10px 36px 10px 14px;
+      padding: 9px 36px 9px 14px;
       color: var(--text-main);
       font-size: 15px;
       outline: none;
@@ -142,7 +146,7 @@
       display: flex;
       gap: 7px;
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: 6px;
       scrollbar-width: none;
     }
 
@@ -156,7 +160,7 @@
       color: #cbd5e1;
       font-size: 12.5px;
       font-weight: 600;
-      padding: 6px 12px;
+      padding: 5px 11px;
       border-radius: 8px;
       white-space: nowrap;
       cursor: pointer;
@@ -170,10 +174,79 @@
       font-weight: 700;
     }
 
+    /* Barra rápida alfabética A-Z */
+    .alpha-bar {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding-top: 4px;
+      border-top: 1px solid rgba(36, 51, 64, 0.7);
+      scrollbar-width: none;
+    }
+
+    .alpha-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .alpha-btn {
+      min-width: 26px;
+      height: 26px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .alpha-btn.has-items {
+      color: #e2e8f0;
+      background: rgba(24, 35, 44, 0.85);
+      border-color: var(--border-subtle);
+    }
+
+    .alpha-btn.has-items:active {
+      background: var(--gold-accent);
+      color: #0b1116;
+    }
+
+    .alpha-btn:disabled {
+      opacity: 0.28;
+      cursor: default;
+    }
+
     main {
-      padding: 12px 14px;
+      padding: 10px 14px;
       max-width: 640px;
       margin: 0 auto;
+    }
+
+    .history-banner {
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      color: #86efac;
+      font-size: 12px;
+      padding: 8px 11px;
+      border-radius: 9px;
+      margin-bottom: 10px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .history-banner button {
+      background: transparent;
+      border: none;
+      color: #86efac;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
     }
 
     .results-info {
@@ -198,17 +271,29 @@
       white-space: nowrap;
     }
 
+    .letter-divider {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold-accent);
+      background: rgba(234, 179, 8, 0.08);
+      border-left: 3px solid var(--gold-accent);
+      padding: 3px 9px;
+      border-radius: 4px;
+      margin-top: 6px;
+      scroll-margin-top: 165px;
+    }
+
     .song-list {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
     }
 
     .song-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 11px 12px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -251,7 +336,7 @@
       background: rgba(234, 179, 8, 0.1);
       padding: 2px 7px;
       border-radius: 5px;
-      margin-top: 5px;
+      margin-top: 4px;
     }
 
     .pick-btn {
@@ -352,18 +437,24 @@
       cursor: pointer;
     }
 
-    .guest-input {
+    .meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .guest-input, .dedication-select {
       width: 100%;
       background: var(--bg-input);
       border: 1px solid #334656;
       border-radius: 9px;
-      padding: 10px 12px;
+      padding: 9px 10px;
       color: var(--text-main);
-      font-size: 14px;
+      font-size: 13.5px;
       outline: none;
     }
 
-    .guest-input:focus {
+    .guest-input:focus, .dedication-select:focus {
       border-color: var(--green-primary);
     }
 
@@ -415,16 +506,23 @@
     </div>
 
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Busca por canción o artista..." autocomplete="off" />
+      <input type="text" id="searchInput" placeholder="Busca por canción o artista (sin tildes)..." autocomplete="off" />
       <button id="clearSearch" class="clear-btn" title="Limpiar búsqueda">✕</button>
     </div>
 
     <div id="genresBar" class="genres-bar">
       <button class="genre-chip active" data-genre="TODOS">Todos</button>
     </div>
+
+    <div id="alphaBar" class="alpha-bar"></div>
   </header>
 
   <main>
+    <div id="historyBanner" class="history-banner">
+      <span id="historyText"></span>
+      <button id="closeHistory" title="Ocultar aviso">✕</button>
+    </div>
+
     <div class="results-info">
       <span id="resultsCount">Cargando catálogo...</span>
       <button id="sortToggle" class="sort-toggle" title="Cambiar orden alfabético">Orden: Título A–Z ⇅</button>
@@ -435,7 +533,16 @@
   <div class="bottom-bar">
     <div class="bottom-inner">
       <div id="selectedPreview" class="selected-preview"></div>
-      <input type="text" id="guestName" class="guest-input" placeholder="Número de mesa (opcional, ej. Mesa 5)" maxlength="50" />
+      <div class="meta-row">
+        <input type="text" id="guestName" class="guest-input" placeholder="Mesa (opcional, ej. Mesa 5)" maxlength="40" />
+        <select id="dedicationSelect" class="dedication-select" aria-label="Motivo o dedicatoria">
+          <option value="">Motivo: Normal</option>
+          <option value="Para prender la pista">🔥 Para bailar</option>
+          <option value="Cumpleaños">🎂 Cumpleaños</option>
+          <option value="Aniversario / Parejas">🥂 Aniversario</option>
+          <option value="Dedicatoria especial">🎤 Dedicatoria</option>
+        </select>
+      </div>
       <button id="sendWaBtn" class="wa-btn" disabled>
         Selecciona al menos 1 canción
       </button>
@@ -445,25 +552,34 @@
   <script>
     const WHATSAPP_NUMBER = "593993983329";
     const MAX_SONGS = 3;
+    const COOLDOWN_SECONDS = 180; // 3 minutos de espera entre envíos para evitar saturación
     const CSV_FILE = "musica.csv";
+    const STORAGE_KEY_COOLDOWN = "wr_last_sent_ts";
+    const STORAGE_KEY_HISTORY = "wr_last_songs";
 
     let allSongs = [];
     let selectedSongs = [];
     let activeGenre = "TODOS";
     let searchQuery = "";
     let sortBy = "titulo";
+    let cooldownInterval = null;
 
     const searchInput = document.getElementById("searchInput");
     const clearSearchBtn = document.getElementById("clearSearch");
     const genresBar = document.getElementById("genresBar");
+    const alphaBar = document.getElementById("alphaBar");
     const songList = document.getElementById("songList");
     const resultsCount = document.getElementById("resultsCount");
     const sortToggle = document.getElementById("sortToggle");
     const counterPill = document.getElementById("counterPill");
     const selectedPreview = document.getElementById("selectedPreview");
     const guestNameInput = document.getElementById("guestName");
+    const dedicationSelect = document.getElementById("dedicationSelect");
     const sendWaBtn = document.getElementById("sendWaBtn");
     const toastEl = document.getElementById("toast");
+    const historyBanner = document.getElementById("historyBanner");
+    const historyText = document.getElementById("historyText");
+    const closeHistory = document.getElementById("closeHistory");
 
     let toastTimer = null;
     function showToast(msg) {
@@ -471,6 +587,26 @@
       toastEl.classList.add("show");
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+    }
+
+    // Normalizar texto eliminando tildes, diéresis y signos para búsqueda tolerante
+    function normalizeText(str) {
+      return (str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    // Obtener la letra índice (# o A-Z) según el criterio de ordenamiento
+    function getIndexLetter(song) {
+      const target = sortBy === "artista" ? song.artista : song.titulo;
+      const clean = normalizeText(target).toUpperCase();
+      if (!clean) return "#";
+      const first = clean.charAt(0);
+      return first >= "A" && first <= "Z" ? first : "#";
     }
 
     function parseCSV(text) {
@@ -497,11 +633,15 @@
         row.push(current.trim());
 
         if (row.length >= 3 && row[0]) {
+          const titulo = row[0];
+          const artista = row[1] || "Artista Varios";
+          const genero = row[2] || "General";
           songs.push({
             id: i,
-            titulo: row[0],
-            artista: row[1] || "Artista Varios",
-            genero: row[2] || "General"
+            titulo,
+            artista,
+            genero,
+            searchBlob: normalizeText(`${titulo} ${artista} ${genero.replace(/_/g, " ")}`)
           });
         }
       }
@@ -527,6 +667,8 @@
         const csvText = await response.text();
         allSongs = parseCSV(csvText);
         buildGenreChips();
+        renderHistoryBanner();
+        startCooldownTimer();
         renderSongs();
       } catch (err) {
         resultsCount.textContent = "Error al cargar el catálogo.";
@@ -560,6 +702,28 @@
       });
     }
 
+    function updateAlphaBar(availableLetters) {
+      const letters = ["#", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")];
+      alphaBar.innerHTML = "";
+      letters.forEach(letter => {
+        const btn = document.createElement("button");
+        btn.className = "alpha-btn";
+        btn.textContent = letter;
+        if (availableLetters.has(letter)) {
+          btn.classList.add("has-items");
+          btn.addEventListener("click", () => {
+            const target = document.getElementById(`letter-${letter}`);
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        } else {
+          btn.disabled = true;
+        }
+        alphaBar.appendChild(btn);
+      });
+    }
+
     function isSelected(songId) {
       return selectedSongs.some(s => s.id === songId);
     }
@@ -579,6 +743,25 @@
       renderSongs();
     }
 
+    function getRemainingCooldown() {
+      const lastSent = parseInt(localStorage.getItem(STORAGE_KEY_COOLDOWN) || "0", 10);
+      if (!lastSent) return 0;
+      const elapsed = Math.floor((Date.now() - lastSent) / 1000);
+      return Math.max(0, COOLDOWN_SECONDS - elapsed);
+    }
+
+    function startCooldownTimer() {
+      if (cooldownInterval) clearInterval(cooldownInterval);
+      updateSelectionUI();
+      cooldownInterval = setInterval(() => {
+        if (getRemainingCooldown() <= 0) {
+          clearInterval(cooldownInterval);
+          cooldownInterval = null;
+        }
+        updateSelectionUI();
+      }, 1000);
+    }
+
     function updateSelectionUI() {
       const count = selectedSongs.length;
       counterPill.textContent = `${count} / ${MAX_SONGS} elegidas`;
@@ -592,6 +775,15 @@
         selectedPreview.appendChild(tag);
       });
 
+      const remaining = getRemainingCooldown();
+      if (remaining > 0) {
+        const mins = Math.floor(remaining / 60);
+        const secs = String(remaining % 60).padStart(2, "0");
+        sendWaBtn.disabled = true;
+        sendWaBtn.textContent = `⏳ Espera ${mins}:${secs} para el siguiente pedido`;
+        return;
+      }
+
       if (count === 0) {
         sendWaBtn.disabled = true;
         sendWaBtn.textContent = "Selecciona al menos 1 canción";
@@ -602,28 +794,57 @@
       }
     }
 
+    function renderHistoryBanner() {
+      const lastHistory = localStorage.getItem(STORAGE_KEY_HISTORY);
+      if (lastHistory) {
+        historyText.textContent = `✓ Último pedido enviado: ${lastHistory}`;
+        historyBanner.style.display = "flex";
+      } else {
+        historyBanner.style.display = "none";
+      }
+    }
+
+    closeHistory.addEventListener("click", () => {
+      historyBanner.style.display = "none";
+    });
+
     function renderSongs() {
-      const q = searchQuery.toLowerCase().trim();
+      const qNorm = normalizeText(searchQuery);
+      const tokens = qNorm ? qNorm.split(" ") : [];
+
       const filtered = allSongs.filter(song => {
         const matchGenre = activeGenre === "TODOS" || song.genero === activeGenre;
-        const matchText = !q ||
-          song.titulo.toLowerCase().includes(q) ||
-          song.artista.toLowerCase().includes(q) ||
-          song.genero.toLowerCase().includes(q);
-        return matchGenre && matchText;
+        if (!matchGenre) return false;
+        if (tokens.length === 0) return true;
+        return tokens.every(tok => song.searchBlob.includes(tok));
       });
 
       const sorted = sortSongsList(filtered);
       resultsCount.textContent = `${sorted.length} canciones (A–Z)`;
 
       if (sorted.length === 0) {
+        updateAlphaBar(new Set());
         songList.innerHTML = `<div class="empty-state">No encontramos canciones con ese nombre.<br>Prueba con otro artista o género.</div>`;
         return;
       }
 
+      const availableLetters = new Set();
+      let currentLetter = "";
       const fragment = document.createDocumentFragment();
 
       sorted.forEach(song => {
+        const letter = getIndexLetter(song);
+        availableLetters.add(letter);
+
+        if (letter !== currentLetter) {
+          currentLetter = letter;
+          const divider = document.createElement("div");
+          divider.className = "letter-divider";
+          divider.id = `letter-${letter}`;
+          divider.textContent = letter;
+          fragment.appendChild(divider);
+        }
+
         const chosen = isSelected(song.id);
         const card = document.createElement("div");
         card.className = "song-card" + (chosen ? " selected" : "");
@@ -641,6 +862,7 @@
         fragment.appendChild(card);
       });
 
+      updateAlphaBar(availableLetters);
       songList.innerHTML = "";
       songList.appendChild(fragment);
     }
@@ -679,18 +901,34 @@
     });
 
     sendWaBtn.addEventListener("click", () => {
-      if (selectedSongs.length === 0) return;
+      if (selectedSongs.length === 0 || getRemainingCooldown() > 0) return;
 
       const mesa = guestNameInput.value.trim();
+      const motivo = dedicationSelect.value;
+
       let msg = `🎧 *PEDIDO EN VIVO — Eventos y Sonido W&R*\n`;
       if (mesa) {
-        msg += `🪑 *Mesa / Referencia:* ${mesa}\n`;
+        msg += `🪑 *Mesa:* ${mesa}\n`;
+      }
+      if (motivo) {
+        msg += `✨ *Motivo:* ${motivo}\n`;
       }
       msg += `\n🎵 *Canciones solicitadas:*\n`;
 
       selectedSongs.forEach((s, idx) => {
         msg += `${idx + 1}. *${s.titulo}* — ${s.artista} _(${s.genero})_\n`;
       });
+
+      const summaryTitles = selectedSongs.map(s => s.titulo).join(", ");
+      localStorage.setItem(STORAGE_KEY_HISTORY, summaryTitles);
+      localStorage.setItem(STORAGE_KEY_COOLDOWN, String(Date.now()));
+
+      // Limpiar selección automáticamente para evitar envíos duplicados
+      selectedSongs = [];
+      dedicationSelect.value = "";
+      renderHistoryBanner();
+      startCooldownTimer();
+      renderSongs();
 
       const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, "_blank");
