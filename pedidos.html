@@ -435,7 +435,7 @@
   <div class="bottom-bar">
     <div class="bottom-inner">
       <div id="selectedPreview" class="selected-preview"></div>
-      <input type="text" id="guestName" class="guest-input" placeholder="Tu nombre o número de mesa (ej. Mesa 5 - Carlos)" maxlength="50" />
+      <input type="text" id="guestName" class="guest-input" placeholder="Número de mesa (opcional, ej. Mesa 5)" maxlength="50" />
       <button id="sendWaBtn" class="wa-btn" disabled>
         Selecciona al menos 1 canción
       </button>
@@ -443,11 +443,7 @@
   </div>
 
   <script>
-    // =========================================================================
-    // CONFIGURACIÓN PRINCIPAL (PEGA AQUÍ TU NÚMERO DE WHATSAPP)
-    // Formato: código de país (593 para Ecuador) + número sin el 0 inicial
-    // =========================================================================
-    const WHATSAPP_NUMBER = "593999999999";
+    const WHATSAPP_NUMBER = "593993983329";
     const MAX_SONGS = 3;
     const CSV_FILE = "musica.csv";
 
@@ -455,7 +451,7 @@
     let selectedSongs = [];
     let activeGenre = "TODOS";
     let searchQuery = "";
-    let sortBy = "titulo"; // "titulo" (A-Z) o "artista" (A-Z)
+    let sortBy = "titulo";
 
     const searchInput = document.getElementById("searchInput");
     const clearSearchBtn = document.getElementById("clearSearch");
@@ -685,10 +681,12 @@
     sendWaBtn.addEventListener("click", () => {
       if (selectedSongs.length === 0) return;
 
-      const guest = guestNameInput.value.trim() || "Invitado del evento";
+      const mesa = guestNameInput.value.trim();
       let msg = `🎧 *PEDIDO EN VIVO — Eventos y Sonido W&R*\n`;
-      msg += `👤 *Invitado / Mesa:* ${guest}\n\n`;
-      msg += `🎵 *Canciones solicitadas:*\n`;
+      if (mesa) {
+        msg += `🪑 *Mesa / Referencia:* ${mesa}\n`;
+      }
+      msg += `\n🎵 *Canciones solicitadas:*\n`;
 
       selectedSongs.forEach((s, idx) => {
         msg += `${idx + 1}. *${s.titulo}* — ${s.artista} _(${s.genero})_\n`;
