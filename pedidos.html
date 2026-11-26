@@ -30,11 +30,10 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-main);
       color: var(--text-main);
-      padding-bottom: 145px; /* Espacio para la barra fija inferior */
+      padding-bottom: 145px;
       line-height: 1.4;
     }
 
-    /* Encabezado fijo superior */
     header {
       position: sticky;
       top: 0;
@@ -96,7 +95,6 @@
       white-space: nowrap;
     }
 
-    /* Buscador */
     .search-box {
       position: relative;
       margin-bottom: 10px;
@@ -140,7 +138,6 @@
       justify-content: center;
     }
 
-    /* Pestañas de géneros deslizables */
     .genres-bar {
       display: flex;
       gap: 7px;
@@ -173,7 +170,6 @@
       font-weight: 700;
     }
 
-    /* Contenedor de canciones */
     main {
       padding: 12px 14px;
       max-width: 640px;
@@ -185,7 +181,21 @@
       color: var(--text-muted);
       margin-bottom: 10px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      gap: 8px;
+    }
+
+    .sort-toggle {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--gold-accent);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
     .song-list {
@@ -268,7 +278,6 @@
       color: var(--gold-accent);
     }
 
-    /* Aviso flotante (Toast) */
     .toast {
       position: fixed;
       top: 18px;
@@ -293,7 +302,6 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Barra inferior fija de envío */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -419,7 +427,7 @@
   <main>
     <div class="results-info">
       <span id="resultsCount">Cargando catálogo...</span>
-      <span>Máx. 3 por pedido</span>
+      <button id="sortToggle" class="sort-toggle" title="Cambiar orden alfabético">Orden: Título A–Z ⇅</button>
     </div>
     <div id="songList" class="song-list"></div>
   </main>
@@ -436,10 +444,10 @@
 
   <script>
     // =========================================================================
-    // CONFIGURACIÓN PRINCIPAL (EDITA AQUÍ TU NÚMERO DE WHATSAPP)
+    // CONFIGURACIÓN PRINCIPAL (PEGA AQUÍ TU NÚMERO DE WHATSAPP)
     // Formato: código de país (593 para Ecuador) + número sin el 0 inicial
     // =========================================================================
-    const WHATSAPP_NUMBER = "593993983329";
+    const WHATSAPP_NUMBER = "593999999999";
     const MAX_SONGS = 3;
     const CSV_FILE = "musica.csv";
 
@@ -447,12 +455,14 @@
     let selectedSongs = [];
     let activeGenre = "TODOS";
     let searchQuery = "";
+    let sortBy = "titulo"; // "titulo" (A-Z) o "artista" (A-Z)
 
     const searchInput = document.getElementById("searchInput");
     const clearSearchBtn = document.getElementById("clearSearch");
     const genresBar = document.getElementById("genresBar");
     const songList = document.getElementById("songList");
     const resultsCount = document.getElementById("resultsCount");
+    const sortToggle = document.getElementById("sortToggle");
     const counterPill = document.getElementById("counterPill");
     const selectedPreview = document.getElementById("selectedPreview");
     const guestNameInput = document.getElementById("guestName");
@@ -467,7 +477,6 @@
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
     }
 
-    // Parseador CSV compatible con comillas y comas internas
     function parseCSV(text) {
       const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
       if (lines.length < 2) return [];
@@ -503,7 +512,18 @@
       return songs;
     }
 
-    // Cargar catálogo desde musica.csv
+    function sortSongsList(list) {
+      return [...list].sort((a, b) => {
+        if (sortBy === "artista") {
+          const cmpArt = a.artista.localeCompare(b.artista, "es", { sensitivity: "base" });
+          return cmpArt !== 0 ? cmpArt : a.titulo.localeCompare(b.titulo, "es", { sensitivity: "base" });
+        } else {
+          const cmpTit = a.titulo.localeCompare(b.titulo, "es", { sensitivity: "base" });
+          return cmpTit !== 0 ? cmpTit : a.artista.localeCompare(b.artista, "es", { sensitivity: "base" });
+        }
+      });
+    }
+
     async function loadCatalog() {
       try {
         const response = await fetch(CSV_FILE + "?v=" + Date.now());
@@ -518,9 +538,10 @@
       }
     }
 
-    // Generar botones de género dinámicamente desde los 18 géneros del CSV
     function buildGenreChips() {
-      const genres = [...new Set(allSongs.map(s => s.genero))].sort();
+      const genres = [...new Set(allSongs.map(s => s.genero))].sort((a, b) =>
+        a.localeCompare(b, "es", { sensitivity: "base" })
+      );
       genres.forEach(genre => {
         const btn = document.createElement("button");
         btn.className = "genre-chip";
@@ -566,12 +587,11 @@
       const count = selectedSongs.length;
       counterPill.textContent = `${count} / ${MAX_SONGS} elegidas`;
 
-      // Mini etiquetas de canciones elegidas en la barra inferior
       selectedPreview.innerHTML = "";
       selectedSongs.forEach(song => {
         const tag = document.createElement("div");
         tag.className = "mini-tag";
-        tag.innerHTML = `${song.titulo} <span title="Quitar">✕</span>`;
+        tag.innerHTML = `${escapeHtml(song.titulo)} <span title="Quitar">✕</span>`;
         tag.querySelector("span").addEventListener("click", () => toggleSong(song));
         selectedPreview.appendChild(tag);
       });
@@ -597,18 +617,17 @@
         return matchGenre && matchText;
       });
 
-      resultsCount.textContent = `${filtered.length} canciones disponibles`;
+      const sorted = sortSongsList(filtered);
+      resultsCount.textContent = `${sorted.length} canciones (A–Z)`;
 
-      if (filtered.length === 0) {
+      if (sorted.length === 0) {
         songList.innerHTML = `<div class="empty-state">No encontramos canciones con ese nombre.<br>Prueba con otro artista o género.</div>`;
         return;
       }
 
-      // Renderizar hasta 150 tarjetas por vista para máxima fluidez en celulares
-      const visible = filtered.slice(0, 150);
       const fragment = document.createDocumentFragment();
 
-      visible.forEach(song => {
+      sorted.forEach(song => {
         const chosen = isSelected(song.id);
         const card = document.createElement("div");
         card.className = "song-card" + (chosen ? " selected" : "");
@@ -638,7 +657,17 @@
         .replace(/"/g, "&quot;");
     }
 
-    // Eventos del buscador
+    sortToggle.addEventListener("click", () => {
+      if (sortBy === "titulo") {
+        sortBy = "artista";
+        sortToggle.textContent = "Orden: Artista A–Z ⇅";
+      } else {
+        sortBy = "titulo";
+        sortToggle.textContent = "Orden: Título A–Z ⇅";
+      }
+      renderSongs();
+    });
+
     searchInput.addEventListener("input", (e) => {
       searchQuery = e.target.value;
       clearSearchBtn.style.display = searchQuery ? "flex" : "none";
@@ -653,7 +682,6 @@
       searchInput.focus();
     });
 
-    // Envío directo a WhatsApp
     sendWaBtn.addEventListener("click", () => {
       if (selectedSongs.length === 0) return;
 
